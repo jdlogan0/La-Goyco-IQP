@@ -1,0 +1,98 @@
+<!-- please work -->
+
+<!DOCTYPE html>
+<html lang="en">
+  
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IQP test | map</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+  </head>
+
+  <body>
+    <div class = "wrapper">
+    <header>
+        <div class="navbar">
+          <ul class = "navlinks">
+            <li><a href="index.html">Noise Pollution in La Goyco</a></li>
+            <li><a href="about.html">About</a></li>
+            <li class = "current"><a href="map.html">Map</a></li>
+            <li><a href="handbook.html">Handbook</a></li>
+          </ul>
+          <div class="language-select">
+            <button class="lang-btn">🌐 English ▾</button>
+            <div class = "lang-options">
+              <div class = "lang">🌐 English</div>
+              <div class = "lang">🌐 Español</div>
+            </div>
+          </button>
+          </div>
+        </div>
+        <div class = "navspace"></div>
+    </header>
+
+    <div class = "page flex">
+        <div id="map"></div>
+        <div id = "map-info" class = "map-txt">
+            <h2>Noise Map</h2>
+            <p>This is a map of noise data collected by the community!</p>
+            <p>Click on a square on the grid to see data from that area. A report may include the decibel level, type of noise (traffic, wildlife, music, etc.), and percieved loudness.</p>
+            <button class = "report-btn" id = "reportBtn">Add to the map!</button>
+        </div>
+
+        <div id = "map-report" class = "map-txt">
+            <button id = "back">X</button>
+            <h2>Your Data</h2>
+            <p>Decibel level optional</p>
+            <form>
+                <label for="decibel">Decibel Level:</label>
+                <input type="number" id="decibel" name="decibel" min="25" max="140" />
+
+                <p>Location (add tooltip to talk about exact location + privacy):</p>
+                <button>Use current location</button>
+                <button>Pick location on map</button>
+
+                <label for="perception">On a scale of 1 to 10 how loud was it:</label>
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="10" value="5" class="slider" id="perception">
+                    <output id = "perception-num">5</output>
+                </div>
+
+                <p>Types of noise present</p>
+                <div class = "typecontainer">
+                    <div class = "type">
+                        <input type="checkbox" id="type1" name="type1" value="traffic">
+                        <label for="type1"> traffic</label><br>
+                    </div>
+                    <div class = "type">
+                        <input type="checkbox" id="type2" name="type2" value="wildlife">
+                        <label for="type2"> wildlife</label><br>
+                    </div>
+                    <div class = "type">
+                        <input type="checkbox" id="type3" name="type3" value="construction">
+                        <label for="type3"> construction</label><br>
+                    </div>
+                </div>
+
+                <button>Submit</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
+     <div class = "wrapper-space"></div>
+    <footer>
+        <p>placeholder for links and copyright and whatnot</p>
+    </footer>
+    </div>
+    <script defer src="script.js"></script>
+  </body>
+
+</html>
