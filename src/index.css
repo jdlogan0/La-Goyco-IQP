@@ -1,13 +1,273 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+#mapId {
+  height: 100vh;
+  width: 100vw;
+}
+
+/* FOR EVERY PAGE */
+
+@import url("https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap");
+
+html {
+  height: 100%;
+  font-family: "Titillium Web", sans-serif;
+  background-color: #82dcd8;
+  color: #424242;
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: auto;
+}
+.wrapper-space {
+  flex-grow: 1;
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+}
+
+footer {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 0%;
+}
+
+.navbar {
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  width: 100%;
+  position: fixed;
+  padding: 5px 5%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: #eeeeee;
+  background-color: #424242;
+}
+
+.navlinks {
+  list-style: none;
+  padding: 0px;
+}
+.navlinks li {
+  display: inline-block;
+  padding: 0px 40px 0px 0px;
+}
+
+.navbar a {
+  color: #bbbbbb;
+  text-decoration: none;
+}
+
+.navbar a:hover,
+.current a {
+  color: #eeeeee;
+  font-weight: bold;
+  border-bottom: 3px solid #eeeeee;
+  transition: 0.2s;
+}
+
+.navspace {
+  height: 80px;
+}
+
+.language-select {
+  position: relative;
+  display: inline-block;
+  width: 130px;
+  border: 2px solid #eeeeee;
+  border-radius: 5px;
+}
+.lang-btn {
+  background-color: #424242;
+  width: 100%;
+  font-family: inherit;
+  color: #eeeeee;
+  padding: 5px;
+  font-size: 16px;
+  border: none;
+}
+.lang-options {
+  display: none;
+  position: absolute;
+  background-color: #424242;
+  min-width: 100%;
+  text-align: center;
+  z-index: 1;
+}
+.language-select:hover .lang-options {
+  display: block;
+}
+.lang-btn:hover {
+  background-color: #eeeeee;
+  color: #424242;
+}
+.lang:hover {
+  background-color: #eeeeee;
+  color: #424242;
+}
+
+.main {
+  height: 300px;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main h1 {
+  font-size: 80px;
+}
+
+.maintxt {
+  text-align: center;
+  max-width: 60%;
+}
+
+.main h2 {
+  font-size: 50px;
+}
+
+/* HOME */
+
+.pages {
+  display: grid;
+  grid-auto-rows: 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 0px 30px;
+}
+
+.page {
+  background-color: #eeeeee;
+  box-shadow: 10px 10px #42424272;
+  margin: 30px;
+  padding: 30px;
+}
+
+.page a {
+  text-decoration: none;
+  color: #3e8885;
+}
+
+.page img {
+  max-width: 100%;
+}
+
+/* ABOUT */
+
+#about {
+  margin: 50px;
+}
+
+/* MAP */
+
+#map {
+  width: 900px;
+  height: 500px;
+  background-color: #00000022;
+}
+
+.map-txt {
+  flex-grow: 1;
+  padding: 50px 0px 0px 50px;
+  max-width: 30%;
+}
+
+#map-info {
+  display: block;
+}
+
+#map-report {
+  display: none;
+}
+
+.report-btn {
+  cursor: pointer;
+  position: relative;
+  color: #424242;
+  border: 2px solid #424242;
+  background-color: #eeeeee;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 18px;
+  font-family: inherit;
+  box-shadow: 2px 2px #424242;
+  transition: 0.2s;
+}
+
+.report-btn:hover {
+  color: #eeeeee;
+  background-color: #424242;
+  transition: 0.2s;
+}
+
+.report-btn:active {
+  box-shadow: none;
+  top: 2px;
+  left: 2px;
+}
+
+#perception,
+#perception-num {
+  vertical-align: middle;
+}
+
+.type {
+  display: inline-block;
+}
+
+#back {
+  float: right;
+}
+
+/* HANDBOOK */
+.handbook {
+  padding: 20px;
+  align-items: flex-start;
+  flex-grow: 1;
+}
+
+#handbook-txt {
+  flex-grow: 1;
+  max-height: calc(100vh - 160px - 100px);
+  overflow: scroll;
+}
+
+#handbook-nav {
+  display: flex;
+  flex-direction: column;
+  min-width: fit-content;
 }
