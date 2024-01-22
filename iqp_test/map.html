@@ -44,39 +44,67 @@
             <button class = "report-btn" id = "reportBtn">Add to the map!</button>
         </div>
 
+        <div id = "map-data" class = "map-txt">
+          <button class = "back" id = "back-data">X</button>
+          <h2 id = "tile-name">Data from Tile ___</h2>
+          <p>I'll get to this as soon as data actually exists</p>
+        </div>
+
         <div id = "map-report" class = "map-txt">
-            <button id = "back">X</button>
+            <button class = "back" id = "back-report">X</button>
             <h2>Your Data</h2>
-            <p>Decibel level optional</p>
             <form>
-                <label for="decibel">Decibel Level:</label>
-                <input type="number" id="decibel" name="decibel" min="25" max="140" />
+              <button>Input Decibel Levels</button>
+              <br>
+              <br>
+              <label for="loc-btns">Location</label>
+              <div class = "btn-group" id = "loc-btns">
+                <button>Current Location</button>
+                <button>Map Tile</button>
+                <button>Coordinates</button>
+              </div>
+              <br>
+              <label for="time">Time</label>
+              <br>
+              <input type="time" id="time" name="time" required/>
+              <br>
+              <br>
 
-                <p>Location (add tooltip to talk about exact location + privacy):</p>
-                <button>Use current location</button>
-                <button>Pick location on map</button>
+              <label for="perception">Loudness on a Scale from 0 to 10</label>
+              <div class="slidecontainer">
+                <div id = "perception-num" class = "num">5</div>
+                <div id="loudTxt">Neutral</div>
+                <input type="range" min="0" max="10" value="5" class="slider" id="perception">
+              </div>
+              <br>
 
-                <label for="perception">On a scale of 1 to 10 how loud was it:</label>
-                <div class="slidecontainer">
-                    <input type="range" min="1" max="10" value="5" class="slider" id="perception">
-                    <output id = "perception-num">5</output>
+              <label for="feeling">Feeling (fix later)</label>
+              <div class="slidecontainer">
+                <div id="emoji" class = "num">😀</div>
+                <input type="range" min="0" max="4" value="0" class="slider" id="feeling">
+              </div>
+              <br>
+
+              <label for="tagSearch">Tags (noise type, measurement conditions)</label>
+              <br>
+                <div class="tag-container">
+                  <input type="text" placeholder="Search tags..." id="tagSearch" onkeyup="filterTags()" onfocusout = "hideTags()">
+                  <div id="tag-dropdown" class="dropdown">
+                    <button>Car</button>
+                    <button>Motorcycle</button>
+                    <button>Traffic</button>
+                    <button>Construction</button>
+                    <button>Wildlife</button>
+                    <button>Music</button>
+                    <button>Restaurant</button>
+                    <button>Bar</button>
+                    <button>Rain</button>
+                    <button>Indoor</button>
+                    <button>Outdoor</button>
+                  </div>
                 </div>
-
-                <p>Types of noise present</p>
-                <div class = "typecontainer">
-                    <div class = "type">
-                        <input type="checkbox" id="type1" name="type1" value="traffic">
-                        <label for="type1"> traffic</label><br>
-                    </div>
-                    <div class = "type">
-                        <input type="checkbox" id="type2" name="type2" value="wildlife">
-                        <label for="type2"> wildlife</label><br>
-                    </div>
-                    <div class = "type">
-                        <input type="checkbox" id="type3" name="type3" value="construction">
-                        <label for="type3"> construction</label><br>
-                    </div>
-                </div>
+                <br>
+              <br>
 
                 <button>Submit</button>
             </form>
