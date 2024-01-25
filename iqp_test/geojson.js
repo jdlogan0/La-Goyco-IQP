@@ -6,7 +6,6 @@ let geojson =
     "properties": {
         "avgdB": 50,
         "avgLoud": 5,
-        "dataNum": 2,
         "data" : [
             {
                 "decibel" : {
@@ -43,7 +42,6 @@ let geojson =
     "properties": {
         "avgdB": 90,
         "avgLoud": 5,
-        "dataNum" : 1,
         "data" : [
             {
                 "decibel" : {

@@ -38,22 +38,32 @@
     <div class = "page flex">
         <div id="map"></div>
         <div id = "map-info" class = "map-txt">
+          <div class = "txtHeader">
             <h2>Noise Map</h2>
+          </div>
+          <div class = "txtMain">
             <p>This is a map of noise data collected by the community!</p>
             <p>Click on a square on the grid to see data from that area. A report may include the decibel level, type of noise (traffic, wildlife, music, etc.), and percieved loudness.</p>
             <button class = "report-btn" id = "reportBtn">Add to the map!</button>
+          </div>
         </div>
 
         <div id = "map-data" class = "map-txt">
-          <button class = "back" id = "back-data">X</button>
-          <h2 id = "tile-name">Tile Name? Position?</h2>
-          <div id = "dataBlocks">
+          <div class = "txtHeader">
+            <button class = "back" id = "back-data">X</button>
+            <h2 id = "tile-name">Tile Name? Position?</h2>
+          </div>
+          <div class = "txtMain">
+            <div id = "dataBlocks"></div>
           </div>
         </div>
 
         <div id = "map-report" class = "map-txt">
+          <div class = "txHeader">
             <button class = "back" id = "back-report">X</button>
             <h2>Your Data</h2>
+          </div>
+          <div class = "txtMain">
             <form>
               <button>Input Decibel Levels</button>
               <br>
@@ -110,6 +120,7 @@
 
                 <button>Submit</button>
             </form>
+          </div>
         </div>
     </div>
     

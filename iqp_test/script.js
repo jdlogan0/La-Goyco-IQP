@@ -27,6 +27,7 @@ let goyco = L.polygon(
         [18.454494, -66.063388],
         [18.45427, -66.061994],
         [18.454026, -66.061672],
+        [18.453619, -66.061522],
         [18.453191, -66.061136],
         [18.452662, -66.059484],
         [18.45258, -66.05766],
@@ -56,6 +57,26 @@ let goyco = L.polygon(
     }
     ).addTo(map);
 
+    
+function getColorDB(dB) {
+    let color = ""
+    if (dB == null) {color = "#6b7e9c";}
+    else if (dB < 10) {color = "#48f702";}
+    else if (dB < 10) {color = "#69f702";}
+    else if (dB < 30) {color = "#89f702";}
+    else if (dB < 40) {color = "#a6f702";}
+    else if (dB < 50) {color = "#b6f702";}
+    else if (dB < 60) {color = "#caf702";}
+    else if (dB < 70) {color = "#e7f702";}
+    else if (dB < 80) {color = "#f7ef02";}
+    else if (dB < 90) {color = "#f7c602";}
+    else if (dB < 100) {color = "#f79902";}
+    else if (dB < 110) {color = "#f77d02";}
+    else if (dB < 130) {color = "#f76002";}
+    else if (dB < 140) {color = "#f73802";}
+    else {color = "#f70202";};
+    return color;
+}
 
 /* ==========================================================================
 GeoJSON Stuff
@@ -76,20 +97,7 @@ let geoLayer = L.geoJSON(geojson, {
 
             //assign color based on average dB for tile
             let dB = feature.properties.avgdB;
-            if (dB < 10) {thisStyle.fillColor = "#48f702";}
-            else if (dB < 10) {thisStyle.fillColor = "#69f702";}
-            else if (dB < 30) {thisStyle.fillColor = "#89f702";}
-            else if (dB < 40) {thisStyle.fillColor = "#a6f702";}
-            else if (dB < 50) {thisStyle.fillColor = "#b6f702";}
-            else if (dB < 60) {thisStyle.fillColor = "#caf702";}
-            else if (dB < 70) {thisStyle.fillColor = "#e7f702";}
-            else if (dB < 80) {thisStyle.fillColor = "#f7ef02";}
-            else if (dB < 90) {thisStyle.fillColor = "#f7c602";}
-            else if (dB < 100) {thisStyle.fillColor = "#f79902";}
-            else if (dB < 110) {thisStyle.fillColor = "#f77d02";}
-            else if (dB < 130) {thisStyle.fillColor = "#f76002";}
-            else if (dB < 140) {thisStyle.fillColor = "#f73802";}
-            else {thisStyle.color = "#f70202";};
+            thisStyle.fillColor = getColorDB(dB);
             return thisStyle;
         },
     onEachFeature: function onEachFeature(feature, layer) {
@@ -115,6 +123,7 @@ let geoLayer = L.geoJSON(geojson, {
     }
 
 }).addTo(map);
+
 
 /*
 //for testing
@@ -218,20 +227,26 @@ function showData(properties) {
     statHeader.innerHTML = "Overall Stats";
     statBlock.appendChild(statHeader);
     const reportNum = document.createElement("p");
-    reportNum.innerHTML = "Number of reports: " + properties.dataNum;
+    reportNum.innerHTML = "Number of reports: " + properties.data.length;
     statBlock.appendChild(reportNum);
     const tileDB = document.createElement("p");
-    tileDB.innerHTML = "Average decibel level: " + properties.avgdB;
+    if (properties.avgdB != null) {
+        tileDB.innerHTML = "Average decibel level: " + properties.avgdB;
+    }
+    else {
+        tileDB.innerHTML = "Average decibel level: N/A";
+    }
     statBlock.appendChild(tileDB);
     const tileLoud = document.createElement("p");
     tileLoud.innerHTML = "Average subjective loudness (0-10): " + properties.avgLoud;
     statBlock.appendChild(tileLoud);
+    statBlock.style.backgroundColor = getColorDB(properties.avgdB) + "4d";
     dataBlocks.appendChild(statBlock);
 
 
     let dataArr = properties.data;
 
-    for (let i = 0; i < properties.dataNum; i++) {
+    for (let i = 0; i < properties.data.length; i++) {
         const dataBlock = document.createElement("div");
         dataBlock.className = "data";
 
@@ -257,11 +272,15 @@ function showData(properties) {
             const device = document.createElement("p");
             device.innerHTML = "Device used for measurement: " + currentReport.decibel.device;
             dataBlock.appendChild(device);
+
+            dataBlock.style.backgroundColor = getColorDB(currentReport.decibel.avg)  + "4d";
         }
         else {
             const noDB = document.createElement("p");
             noDB.innerHTML = "No decibel data";
             dataBlock.appendChild(noDB);
+
+            dataBlock.style.backgroundColor = getColorDB(null)  + "4d";
         }
         dataBlock.appendChild(document.createElement("br"));
 
@@ -293,8 +312,6 @@ function showData(properties) {
             tags.innerHTML +=  ", " + currentReport.tags[j];
         }
         dataBlock.appendChild(tags);
-
-
 
         dataBlocks.appendChild(dataBlock);
     }

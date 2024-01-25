@@ -190,10 +190,14 @@ footer {
 
 .map-txt {
     flex-grow: 1;
-    padding: 50px 0px 0px 50px;
+    padding: 0px 0px 0px 40px;
+
     max-width: 35%;
     width: 35%;
-    max-height: 500px;
+    max-height: 420px;
+}
+.txtMain {
+    height: 100%;
     overflow: scroll;
 }
 
@@ -276,8 +280,12 @@ form button {
     float: right;
 }
 
+.dataBlocks {
+    max-height: 400px;
+    overflow: scroll;
+}
+
 .data {
-    border: 2px solid #424242;
     border-radius: 10px;
     padding: 15px;
     margin: 15px 5px;
@@ -294,6 +302,7 @@ form button {
     margin: 0px;
     font-size: 18px;
 }
+  
 
 /* HANDBOOK */
 .handbook {
