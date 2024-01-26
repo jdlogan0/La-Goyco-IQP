@@ -118,7 +118,7 @@ let geoLayer = L.geoJSON(geojson, {
         
         //show data if clicked
         layer.on("click",function(e) {
-            showData(feature.properties);
+            showData(feature.properties, feature.geometry.coordinates[0]);
         });
     }
 
@@ -212,9 +212,42 @@ function addTag(tag) {
 Displaying and filtering data
 ========================================================================== */
 
+//local so that the data displaying div doesn't need to be remade 
+//every time you click a tile you've seen before
+let loaded = [];
+
+//dynamically create visual for tile
+const grid = document.getElementById("tileLabeled");
+for (let i = 0; i < 9; i++) {
+    const gridItem = document.createElement("div");
+    gridItem.className = "labelItem";
+    gridItem.id = "labelGrid" + i;
+    if (i == 4) {
+        gridItem.classList.add("gridBox")
+    }
+    grid.appendChild(gridItem);
+}
+
+
 //showData
-function showData(properties) {
-    tName.innerHTML = "Title??? Position??? ";
+function showData(properties, coords) {
+    tName.innerHTML = "Tile " + coords[0][1] + ", " + coords[0][0];
+    //put tooltip here to explain coord title - coordinates of top left corner of tile, .00018 size
+    const topLeft = document.getElementById("labelGrid0");
+    const topRight = document.getElementById("labelGrid2");
+    const bottomRight = document.getElementById("labelGrid8");
+    const bottomLeft = document.getElementById("labelGrid6");
+
+    topLeft.innerHTML = coords[0][1] + ", " + coords[0][0];
+    topRight.innerHTML = coords[1][1] + ", " + coords[1][0];
+    bottomRight.innerHTML = coords[2][1] + ", " + coords[2][0];
+    bottomLeft.innerHTML = coords[3][1] + ", " + coords[3][0];
+
+    document.getElementById("labelGrid4").style.backgroundColor = getColorDB(properties.avgdB) + "4d";
+
+    topLeft.style.textAlign = "right";
+    bottomLeft.style.textAlign = "right";
+
     info.style.display = "none";
     report.style.display = "none";
     data.style.display = "block";
