@@ -289,7 +289,32 @@ function invalidLoc() {
 }
 //calculate tile coordinates given point
 function calcLocation(lat, long) {
-    alert("wip");
+    let startPt = bounds[0];
+
+    roundedLat = parseFloat(lat.toFixed(6));
+    roundedLong = parseFloat(long.toFixed(6));
+
+    let distLat = startPt[0]-roundedLat;
+    let distLong = startPt[1]-roundedLong;
+
+    let boxRow = Math.floor(distLat/gridSize);
+    let boxCol = Math.floor(distLong/gridSize);
+
+    let tileLat = startPt[0] - gridSize*boxRow;
+    let tileLong = startPt[1] - gridSize*boxCol - gridSize;
+
+    alert(tileLat + ", " + tileLong);
+
+    L.marker([lat, long]).addTo(map);
+
+    var latlngs2 = [
+        [tileLat, tileLong],
+        [tileLat, tileLong+gridSize],
+        [tileLat-gridSize, tileLong+gridSize],
+        [tileLat-gridSize, tileLong]
+    ];
+    var poly = L.polygon(latlngs2, {color: 'red'}).addTo(map);
+
 }
 //create tile if none exist at that point
 function createTile() {
