@@ -5,7 +5,7 @@ let geojson =
     "type": "Feature",
     "properties": {
         "avgdB": 50,
-        "avgLoud": 5,
+        "avgLoud": 7,
         "data" : [
             {
                 "decibel" : {
@@ -21,7 +21,7 @@ let geojson =
             {
                 "decibel" : null,
                 "time" : "idk the format",
-                "loudness" : 7,
+                "loudness" : 8,
                 "feeling" : "🙁",
                 "tags" : ["Traffic", "Contruction", "Motorcycle"]
             }

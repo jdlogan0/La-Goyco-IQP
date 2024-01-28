@@ -1,5 +1,3 @@
-<!-- please work -->
-
 <!DOCTYPE html>
 <html lang="en">
   
@@ -23,9 +21,9 @@
             <li class = "current"><a href="map.html">Map</a></li>
             <li><a href="handbook.html">Handbook</a></li>
           </ul>
-          <div class="language-select">
-            <button class="lang-btn">🌐 English ▾</button>
-            <div class = "lang-options">
+          <div class="languageSelect">
+            <button class="langBtn">🌐 English ▾</button>
+            <div class = "langOptions">
               <div class = "lang">🌐 English</div>
               <div class = "lang">🌐 Español</div>
             </div>
@@ -37,44 +35,48 @@
 
     <div class = "page flex">
         <div id="map"></div>
-        <div id = "map-info" class = "map-txt">
+        <div id = "mapInfo" class = "mapTxt">
           <div class = "txtHeader">
             <h2>Noise Map</h2>
           </div>
           <div class = "txtMain">
             <p>This is a map of noise data collected by the community!</p>
             <p>Click on a square on the grid to see data from that area. A report may include the decibel level, type of noise (traffic, wildlife, music, etc.), and percieved loudness.</p>
-            <button class = "report-btn" id = "reportBtn">Add to the map!</button>
+            <button class = "reportBtn" id = "reportBtn">Add to the map!</button>
           </div>
         </div>
 
-        <div id = "map-data" class = "map-txt">
+        <div id = "mapData" class = "mapTxt">
           <div class = "txtHeader">
-            <button class = "back" id = "back-data">X</button>
-            <h2 id = "tile-name">Tile Name? Position?</h2>
+            <button class = "back" id = "backData">X</button>
+            <h2 id = "tileName">Tile Name? Position?</h2>
             <div id = "tileLabeled">
             </div>
           </div>
-          <div class = "txtMain">
-            <div id = "dataBlocks"></div>
+          <div class = "txtMain" id = "dataBlocks">
           </div>
         </div>
 
-        <div id = "map-report" class = "map-txt">
+        <div id = "mapReport" class = "mapTxt">
           <div class = "txHeader">
-            <button class = "back" id = "back-report">X</button>
+            <button class = "back" id = "backReport">X</button>
             <h2>Your Data</h2>
           </div>
-          <div class = "txtMain">
-            <form>
-              <button>Input Decibel Levels</button>
+          <div class = "txtMain" id = "reportForm">
+            <form id = mapForm>
+              <div id = "db">
+                <label for="enterDB">Decibel Data</label>
+                <br>
+                <button id = "enterDB">Input Decibel Levels</button>
+              </div>
               <br>
-              <br>
-              <label for="loc-btns">Location</label>
-              <div class = "btn-group" id = "loc-btns">
-                <button>Current Location</button>
-                <button>Map Tile</button>
-                <button>Coordinates</button>
+              <div id = "location">
+                <label for="locBtns">Location</label>
+                <div class = "btnGroup" id = "locBtns">
+                  <button id = "curLoc">Current Location</button>
+                  <button id = "selectLoc">Select on Map</button>
+                  <button id = "coordLoc">Coordinates</button>
+                </div>
               </div>
               <br>
               <label for="time">Time</label>
@@ -85,7 +87,7 @@
 
               <label for="perception">Loudness on a Scale from 0 to 10</label>
               <div class="slidecontainer">
-                <div id = "perception-num" class = "num">5</div>
+                <div id = "perceptionNum" class = "num">5</div>
                 <div id="loudTxt">Neutral</div>
                 <input type="range" min="0" max="10" value="5" class="slider" id="perception">
               </div>
@@ -100,9 +102,9 @@
 
               <label for="tagSearch">Tags (noise type, measurement conditions)</label>
               <br>
-                <div class="tag-container">
+                <div class="tagContainer">
                   <input type="text" placeholder="Search tags..." id="tagSearch" onkeyup="filterTags()" onfocusout = "hideTags()">
-                  <div id="tag-dropdown" class="dropdown">
+                  <div id="tagDropdown" class="dropdown">
                     <button>Car</button>
                     <button>Motorcycle</button>
                     <button>Traffic</button>
@@ -120,17 +122,36 @@
                 <br>
               <br>
 
-                <button>Submit</button>
+              <button type = "submit">Submit</button>
             </form>
+
           </div>
         </div>
+    </div>
+
+    <div class = "popupContainer" id = "dBpopup">
+      <div class = "popup">
+        <form id = "dbForm">
+          <h2 style = "text-align: center;">Decibel Data</h2>
+          <p>Quick desc here, stuff about device recs</p>
+          <label for="avg">Average dB: </label>
+          <input id = "avg" type = "number" min = 25 max = 140 placeholder=60 required></input><br><br>
+          <label for="max">Max dB: </label>
+          <input id = "max" type = "number" min = 25 max = 140 placeholder=70 required></input><br><br>
+          <label for="device">Device used for measurement: </label>
+          <input id = "device" placeholder="NIOSH SLM (iPhone App)"></input><br><br>
+                
+          <button type = "submit" id = "dbSubmit">Submit</button>
+          <button id = "dbCancel">Cancel</button>
+        </form>
+      </div>
     </div>
     
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossorigin=""></script>
 
-     <div class = "wrapper-space"></div>
+     <div class = "wrapperSpace"></div>
     <footer>
         <p>placeholder for links and copyright and whatnot</p>
     </footer>

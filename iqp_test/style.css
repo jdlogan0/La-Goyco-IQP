@@ -25,7 +25,7 @@ body {
     min-height: 100vh;
     overflow: auto;
 }
-.wrapper-space {
+.wrapperSpace {
     flex-grow: 1;
 }
 
@@ -87,14 +87,14 @@ footer {
 }
 
 
-.language-select {
+.languageSelect {
     position: relative;
     display: inline-block;
     width: 130px;
     border: 2px solid #eeeeee;
     border-radius: 5px;
 }
-.lang-btn {
+.langBtn {
     background-color: #424242;
     width: 100%;
     font-family: inherit;
@@ -103,7 +103,7 @@ footer {
     font-size: 16px;
     border: none;
 }
-.lang-options {
+.langOptions {
     display: none;
     position: absolute;
     background-color: #424242;
@@ -111,10 +111,10 @@ footer {
     text-align: center;
     z-index: 1;
 }
-.language-select:hover .lang-options {
+.languageSelect:hover .langOptions {
     display: block;
 }
-.lang-btn:hover {
+.langBtn:hover {
     background-color: #eeeeee;
     color: #424242;
 }
@@ -188,20 +188,27 @@ footer {
     background-color: #00000022;
 }
 
-.map-txt {
+.mapTxt {
     flex-grow: 1;
     padding: 0px 0px 0px 40px;
 
     max-width: 35%;
     width: 35%;
-    max-height: 340px;
+    max-height: 500px;
 }
 .txtMain {
     height: 100%;
     overflow: scroll;
 }
 
-.map-txt button {
+#dataBlocks {
+    height: 337px;
+}
+#reportForm {
+    height: 423px;
+}
+
+button {
     cursor: pointer;
     position: relative;
     color: #424242;
@@ -212,21 +219,21 @@ footer {
     transition: .2s;
 }
 
-.map-txt button:hover {
+button:hover {
     color: #eeeeee;
     background-color: #424242;
     transition: .2s;
 }
 
-#map-info {
+#mapInfo {
     display: block;
 }
 
-#map-report, #map-data {
+#mapReport, #mapData {
     display: none;
 }
 
-.report-btn {
+.reportBtn {
     box-shadow: 2px 2px #424242;
     padding: 10px 15px;
     font-size: 18px;
@@ -239,13 +246,13 @@ form button {
     margin-bottom: 5px;
 }
 
-.report-btn:active {
+.reportBtn:active {
     box-shadow: none;
     top: 2px;
     left: 2px;
 }
 
-#perception, #perception-num{
+#perception, #perceptionNum{
     vertical-align: middle;
 }
 
@@ -287,8 +294,8 @@ form button {
 
 .data {
     border-radius: 10px;
-    padding: 15px;
     margin: 15px 5px;
+    padding: 15px;
 }
 
 .data p {
@@ -301,6 +308,29 @@ form button {
 .data h4 {
     margin: 0px;
     font-size: 18px;
+}
+.data button {
+    font-size: 20px;
+    font-family: inherit;
+    width: 100%;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    text-align: left;
+    padding: 0px;
+}
+.data button:hover {
+    color:#424242;
+    border: none;
+    background-color: transparent;
+}
+.collapseIcon {
+    float: right;
+}
+.blockContent {
+    height: 0;
+    overflow: hidden;
+    transition: all 0.5s ease-out;
 }
 
 #tileLabeled {
@@ -328,13 +358,13 @@ form button {
     flex-grow: 1;
 }
 
-#handbook-txt {
+#handbookTxt {
     flex-grow: 1;
     max-height: calc(100vh - 160px - 100px);
     overflow: scroll;
 }
 
-#handbook-nav {
+#handbookNav {
     display: flex;
     flex-direction: column;
     min-width: fit-content;
@@ -357,7 +387,7 @@ form button {
     outline: 2px solid #82dcd8;
 }
   
-.tag-container {
+.tagContainer {
     position: relative;
     display: inline-block;
 }
@@ -385,4 +415,45 @@ form button {
 .dropdown button:hover {
     background-color: #82dcd8;
     color: #424242;
+}
+
+/* popupp stuff */
+
+.popupContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,0.3);
+    display: none;
+    z-index: 1000;
+}
+  
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    background-color: #eeeeee;
+    border-radius: 15px;
+    color: #424242;
+    padding: 40px;
+    text-align: left;
+    line-height: 1.7;
+}
+
+.popup input {
+    font-family: inherit;
+    font: inherit;
+    color: #424242;
+    border: none;
+    width: fit-content;
+}
+#device {
+    min-width: 300px;
+}
+.popup input:focus {
+    outline: 2px solid #82dcd8;
 }
