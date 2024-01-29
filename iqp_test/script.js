@@ -6,7 +6,7 @@ General map setup
 ========================================================================== */
 
 //size of grid tiles
-let gridSize = .00018;
+let gridSize = .00072;
 
 //mode for picking location on map (prevent clicking tile)
 let locationMode = false;
@@ -84,53 +84,61 @@ geojson var from geojson.js for organization purposes
 
 //add GeoJSON Layer
 let geoLayer = L.geoJSON(geojson, {
-    style: function(feature) {
-            let thisStyle = {
-                color: "white",
-                weight: 2,
-                fillOpacity: 0.4,
-                stroke: false,
-                fillColor: "#ff0000"
-            };
-
-            //assign color based on average dB for tile
-            let dB = feature.properties.avgdB;
-            thisStyle.fillColor = getColorDB(dB);
-            return thisStyle;
-        },
-    onEachFeature: function onEachFeature(feature, layer) {
-
-        //white outline with hover
-        layer.on("mouseover",function(e) {
-            layer.setStyle({
-                stroke: true,
-            });
-        });
-
-        //no outline when mouse leaves
-        layer.on("mouseout",function(e) {
-            layer.setStyle({
-                stroke: false,
-            });
-        });
-            
-        //show data if clicked 
-        layer.on("click",function(e) {
-            if (locationMode == false) {
-                showData(feature.properties, feature.geometry.coordinates[0]);
-            }
-        });
-        
-    }
+    style: styleGeo,
+    onEachFeature: onEachFeature
 
 }).addTo(map);
+
+function styleGeo(feature) {
+    let thisStyle = {
+        color: "white",
+        weight: 2,
+        fillOpacity: 0.6,
+        stroke: false,
+        fillColor: "#ff0000"
+    };
+
+    //assign color based on average dB for tile
+    let dB = feature.properties.avgdB;
+    thisStyle.fillColor = getColorDB(dB);
+    return thisStyle;
+}
+
+function onEachFeature(feature, layer) {
+
+    //white outline with hover
+    layer.on("mouseover",function(e) {
+        layer.setStyle({
+            stroke: true,
+        });
+    });
+
+    //no outline when mouse leaves
+    layer.on("mouseout",function(e) {
+        layer.setStyle({
+            stroke: false,
+        });
+    });
+        
+    //show data if clicked 
+    layer.on("click",function(e) {
+        if (locationMode == false) {
+            showData(feature.properties, feature.geometry.coordinates[0]);
+        }
+    });
+}
 
 
 
 //for picking location by clicking map
 function onMapClick(e) {
     if (locationMode == true) {
-        checkBounds(e.latlng.lat, e.latlng.lng);
+        handleLoc(e.latlng.lat, e.latlng.lng);
+        locationMode = false;
+    }
+    else {
+        //for testing
+        alert(e.latlng.lat + ", "+ e.latlng.lng);
     }
 }
 map.on('click', onMapClick);
@@ -142,7 +150,7 @@ Input for adding data to the map
 ========================================================================== */
 
 //local vars for responses
-let inputLocation = "";
+let reportTile;
 
 let reportData = 
 {
@@ -223,7 +231,6 @@ function dbSubmit(event) {
     db.appendChild(dbDevice);
     db.style.lineHeight = "5px";
 
-
 };
 
 const dbCancel = document.getElementById("dbCancel");
@@ -240,21 +247,52 @@ curLoc.onclick = (event) => {
     event.preventDefault();
     if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition((position) => {
-            checkBounds(position.coords.latitude, position.coords.longitude);
-          });
-      } else {
+            handleLoc(position.coords.latitude, position.coords.longitude);
+        });
+    } 
+    else {
         alert("Geolocation is not available");
-      }
+    }
 
 }
 const selectLoc = document.getElementById("selectLoc");
 selectLoc.onclick = (event) => {
     event.preventDefault();
     locationMode = true;
+    //add message here telling you to click map (replace buttons)
 }
-function enterCoords() {
-    
+const coordLoc = document.getElementById("coordLoc");
+coordLoc.onclick = (event) => {
+    event.preventDefault();
+    //replace buttons with input and submit (and cancel)
+    //handleLoc() in submit btn function
 }
+//calls the relevant functions after coords are selected through any method
+function handleLoc(lat, long) {
+    let valid = checkBounds(lat, long);
+    if (valid) {
+        let tile = calcLocation(lat,long);
+        displayLocCoords(tile[0], tile[1]);
+
+        //show tile on map for confirmation
+        /* L.marker([lat, long]).addTo(map);
+
+        var latlngs2 = [
+            [tile[0], tile[1]],
+            [tile[0], tile[1]+gridSize],
+            [tile[0]-gridSize, tile[1]+gridSize],
+            [tile[0]-gridSize, tile[1]]
+        ];
+        var poly = L.polygon(latlngs2, {color: 'red'}).addTo(map); */
+
+        //confirm buttons?
+
+    }
+    else {
+        invalidLoc();
+    }
+}
+
 //check if point coordinates are within Goyco - ray casting
 function checkBounds(x, y) {
     let polygon = goycoCoords;
@@ -275,13 +313,7 @@ function checkBounds(x, y) {
             inside = !inside;
         }
     }
-
-    if (inside) {
-        calcLocation(x,y);
-    }
-    else {
-        invalidLoc();
-    }
+    return inside;
 }
 //show error for coords outside of goyco
 function invalidLoc() {
@@ -291,11 +323,8 @@ function invalidLoc() {
 function calcLocation(lat, long) {
     let startPt = bounds[0];
 
-    roundedLat = parseFloat(lat.toFixed(6));
-    roundedLong = parseFloat(long.toFixed(6));
-
-    let distLat = startPt[0]-roundedLat;
-    let distLong = startPt[1]-roundedLong;
+    let distLat = startPt[0]-lat;
+    let distLong = startPt[1]-long;
 
     let boxRow = Math.floor(distLat/gridSize);
     let boxCol = Math.floor(distLong/gridSize);
@@ -303,22 +332,26 @@ function calcLocation(lat, long) {
     let tileLat = startPt[0] - gridSize*boxRow;
     let tileLong = startPt[1] - gridSize*boxCol - gridSize;
 
-    alert(tileLat + ", " + tileLong);
+    tileLat = Math.round(tileLat * 100000) / 100000;
+    tileLong = Math.round(tileLong * 100000) / 100000;
 
-    L.marker([lat, long]).addTo(map);
+    reportTile = [tileLat, tileLong];
 
-    var latlngs2 = [
-        [tileLat, tileLong],
-        [tileLat, tileLong+gridSize],
-        [tileLat-gridSize, tileLong+gridSize],
-        [tileLat-gridSize, tileLong]
-    ];
-    var poly = L.polygon(latlngs2, {color: 'red'}).addTo(map);
-
+    return(reportTile);
 }
-//create tile if none exist at that point
-function createTile() {
+function displayLocCoords(lat, long) {
 
+    const location = document.getElementById("location");
+    location.innerHTML = "";
+    const locHeader = document.createElement("h4");
+    locHeader.innerHTML = "Location";
+    location.appendChild(locHeader);
+
+    const tileCoords = document.createElement("p");
+    tileCoords.innerHTML = "Tile: " + lat + ", " + long;
+    location.appendChild(tileCoords);
+
+    location.style.lineHeight = "5px";
 }
 
 //Subjective loudness slider
@@ -370,24 +403,77 @@ function addTag(tag) {
 }
 
 //Submit form
-const mapForm = document.getElementById("dbForm");
-mapForm.onsubmit = (event) => {
+const mapForm = document.getElementById("mapForm");
+mapForm.addEventListener("submit", mapSubmit);
+function mapSubmit(event) {
     event.preventDefault();
     
     //check if decibel vals entered, if not set to null
-    if (reportData.decibel.avg.value == null) {
+    if (reportData.decibel.avg == null) {
         reportData.decibel = null;
     }
 
     reportData.time = document.querySelector("#time").value;
-    reportData.loudness = document.querySelector("#max").value;
-    reportData.feeling = document.querySelector("#device").value;
-    reportData.tags = document.querySelector("#device").value;
+    reportData.loudness = document.querySelector("#perception").value;
+    reportData.feeling = document.querySelector("#feeling").value;
+    reportData.tags = document.querySelector("#tagSearch").value;
+    addToTile();
 
     mapForm.reset();
     dbForm.reset();
     popup.style.display = "none";
 };
+function addToTile() {
+    let tileExists = false;
+    for (let i = 0; i < geojson.length; i++) {
+        let longMatch = geojson[i].geometry.coordinates[0][0][0] == reportTile[1];
+        let latMatch = geojson[i].geometry.coordinates[0][0][1] == reportTile[0];
+        if (latMatch && longMatch){
+            //add data to tile
+            geojson[i].properties.data.push(reportData);
+
+            //calc new averages
+            geojson[i].properties.avgdB = (geojson[i].properties.avgdB + reportData.decibel.avg)/geojson[i].properties.data.length;
+            geojson[i].properties.avgLoud = (geojson[i].properties.avgLoud + reportData.loudness)/geojson[i].properties.data.length;
+            tileExists = true;
+        }
+    }
+    if (!tileExists) {
+        createTile(reportTile, reportData);
+    }
+}
+//create tile if none exist at that point
+function createTile(coords, data) {
+    //flipped array for geojson
+    let coordsArr = [
+        [coords[1], coords[0]],
+        [coords[1]+gridSize, coords[0]],
+        [coords[1]+gridSize, coords[0]-gridSize],
+        [coords[1], coords[0]-gridSize]
+    ];
+    let avgDecibel = null;
+    if (data.decibel != null) {
+        avgDecibel = data.decibel.avg;
+    }
+    let geoFormat = {
+        "type": "Feature",
+        "properties": {
+            "avgdB": avgDecibel,
+            "avgLoud": data.loudness,
+            "data" : [data]
+        },
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [coordsArr]
+        }
+    }
+
+    geojson.push(geoFormat);
+
+    geoLayer.addData(geoFormat);
+    resetStyle(geoLayer);
+
+}
 
 
 /* ==========================================================================
@@ -531,7 +617,7 @@ function showData(properties, coords) {
         loud.innerHTML = "Loudness on scale from 0 to 10: " + currentReport.loudness;
         blockContent.appendChild(loud);
         const feeling = document.createElement("p");
-        feeling.innerHTML = "Associated feeling: " + currentReport.feeling;
+        feeling.innerHTML = "Associated feeling: " + emojis[currentReport.feeling];
         blockContent.appendChild(feeling);
         blockContent.appendChild(document.createElement("br"));
 

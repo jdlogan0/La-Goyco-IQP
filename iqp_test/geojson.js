@@ -13,16 +13,16 @@ let geojson =
                     "max" : 67,
                     "device" : "NIOSH App"
                 },
-                "time" : "idk the format",
+                "time" : "08:55",
                 "loudness" : 6,
-                "feeling" : "😐",
+                "feeling" : 1,
                 "tags" : ["Traffic", "Wildlife"]
             },
             {
                 "decibel" : null,
-                "time" : "idk the format",
+                "time" : "09:25",
                 "loudness" : 8,
-                "feeling" : "🙁",
+                "feeling" : 3,
                 "tags" : ["Traffic", "Contruction", "Motorcycle"]
             }
         ]
@@ -30,10 +30,10 @@ let geojson =
     "geometry": {
         "type": "Polygon",
         "coordinates": [[
-            [-66.066199, 18.454677],
-            [-66.050924, 18.454677],
-            [-66.050924, 18.447166],
-            [-66.066199, 18.447166]
+            [-66.06101, 18.451],
+            [-66.06029, 18.451],
+            [-66.06029, 18.45028],
+            [-66.06101, 18.45028]
         ]]
     }
 }, 
@@ -49,9 +49,9 @@ let geojson =
                     "max" : 93,
                     "device" : "real professional device tm"
                 },
-                "time" : "idk the format",
+                "time" : "13:30",
                 "loudness" : 9,
-                "feeling" : "😢",
+                "feeling" : 4,
                 "tags" : ["Aircraft", "Construction"]
             }
         ]
@@ -59,10 +59,10 @@ let geojson =
     "geometry": {
         "type": "Polygon",
         "coordinates": [[
-            [-66.057467, 18.446881],
-            [-66.055086, 18.4468],
-            [-66.054957, 18.446026],
-            [-66.058454, 18.445904]
+            [-66.06101, 18.45172],
+            [-66.06029, 18.45172],
+            [-66.06029, 18.451],
+            [-66.06101, 18.451]
         ]]
     }
 }];
