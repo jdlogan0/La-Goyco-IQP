@@ -13,6 +13,7 @@ let geojson =
                     "max" : 67,
                     "device" : "NIOSH App"
                 },
+                "date" : "2024-01-26",
                 "time" : "08:55",
                 "loudness" : 6,
                 "feeling" : 1,
@@ -20,6 +21,7 @@ let geojson =
             },
             {
                 "decibel" : null,
+                "date" : "2024-01-27",
                 "time" : "09:25",
                 "loudness" : 8,
                 "feeling" : 3,
@@ -49,6 +51,7 @@ let geojson =
                     "max" : 93,
                     "device" : "real professional device tm"
                 },
+                "date" : "2024-01-28",
                 "time" : "13:30",
                 "loudness" : 9,
                 "feeling" : 4,

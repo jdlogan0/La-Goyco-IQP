@@ -159,6 +159,7 @@ let reportData =
         "max" : 70,
         "device" : ""
     },
+    "date" : "",
     "time" : "",
     "loudness" : 5,
     "feeling" : "",
@@ -413,6 +414,7 @@ function mapSubmit(event) {
         reportData.decibel = null;
     }
 
+    reportData.date = document.querySelector("#date").value;
     reportData.time = document.querySelector("#time").value;
     reportData.loudness = parseInt(document.querySelector("#perception").value);
     reportData.feeling = parseInt(document.querySelector("#feeling").value);
@@ -616,8 +618,11 @@ function showData(properties, coords) {
         blockContent.appendChild(document.createElement("br"));
 
         const timeHeader = document.createElement("h4");
-        timeHeader.innerHTML = "Time";
+        timeHeader.innerHTML = "Date & Time";
         blockContent.appendChild(timeHeader);
+        const date = document.createElement("p");
+        date.innerHTML = currentReport.date;
+        blockContent.appendChild(date);
         const time = document.createElement("p");
         time.innerHTML = currentReport.time;
         blockContent.appendChild(time);
