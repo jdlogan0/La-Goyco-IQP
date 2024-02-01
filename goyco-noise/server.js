@@ -45,18 +45,6 @@ app.post('/api/addTile', async (req, res) => {
         // Assuming dataPoint is an object containing the required data
         const firstData = dataPoint.data[0]; // Assuming dataPoint.data[0] is already an object
 
-
-        console.log(reportId,   // $1
-            firstData.decibel.avg,      // $2
-            firstData.decibel.max,      // $3 (assuming dbmax is the same as avgdB, adjust accordingly)
-            firstData.decibel.max,      // $4
-            firstData.time,       // $5
-            firstData.date,       // $6
-            firstData.loudness,   // $7
-            firstData.feeling,    // $8
-            "0")
-
-
         await client.query(`
     INSERT INTO noise_report_data (report_id, dbavg, dbmax, dbdevice, time, date, loudness, feeling, tags)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -73,9 +61,6 @@ app.post('/api/addTile', async (req, res) => {
         ]);
 
 
-
-
-
         res.status(201).json({ message: 'GeoJSON data added successfully' });
     } catch (error) {
         console.error('Error creating GeoJSON data:', error);
@@ -83,28 +68,22 @@ app.post('/api/addTile', async (req, res) => {
     }
 });
 
-
 app.post('/api/getTileInfo', async (req, res) => {
     try {
         const { coords } = req.body;
 
-        // Construct a GeoJSON object with type "MultiPoint".
-        const multiPointGeoJSON = {
-            type: "MultiPoint",
-            coordinates: coords,
-        };
 
         // Use the WKT in the query with ST_MakeValid
         const query = `
-            SELECT * 
-            FROM noise_reports 
-            WHERE ST_DWithin(
-                ST_SetSRID(ST_MakeValid(ST_GeomFromGeoJSON($1)), 4326),
-                ST_MakeValid(geometry),
-                0.000001
-            )`;
+    SELECT * 
+    FROM noise_reports 
+    WHERE ST_DWithin(
+        ST_MakeValid(geometry),
+        ST_SetSRID(ST_MakePoint($1, $2), 4326),
+        0.000001
+    )`;
 
-        const tileData = (await client.query(query, [JSON.stringify(multiPointGeoJSON)])).rows;
+        const tileData = (await client.query(query, [coords[0][0], coords[0][1]])).rows;
 
         res.json(tileData);
 
@@ -119,6 +98,7 @@ app.post('/api/getReports', async (req, res) => {
         const { id } = req.body;
 
         const query = `SELECT * FROM noise_report_data WHERE report_id = $1`;
+        console.log(id);
 
         // Execute the query with the provided id
         const reportData = await client.query(query, [id]);
@@ -131,7 +111,6 @@ app.post('/api/getReports', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
 
 app.get('/api/getTiles', async (req, res) => {
     try {
@@ -185,48 +164,70 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'page.js'));
 });
 
-
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
 
 // Update data of a specific tile
-app.post('/api/updateTiles', (req, res) => {
-    const { tile, data } = req.body;
+//the query will first add thje new data to the noise_report_data table and then update the noise_reports table by updating the average 
+app.post('/api/updateTile', async (req, res) => {
+    const { tileCoord, data } = req.body;
 
-    const matchingTileIndex = geojson.findIndex(
-        (tileFeature) =>
-            tileFeature.geometry.coordinates[0][0][0] === tile[1] &&
-            tileFeature.geometry.coordinates[0][0][1] === tile[0]
-    );
+    try {
+        // Find the tile in the noise_reports table based on coordinates
+        const matchingTileQuery = await client.query(
+            'SELECT id, avgdB, avgLoud FROM noise_reports WHERE ST_DWithin(ST_MakeValid(geometry), ST_SetSRID(ST_MakePoint($1, $2), 4326), 0.000001)',
+            [tileCoord[1], tileCoord[0]]
+        );
 
-    if (matchingTileIndex !== -1) {
-        // Update the tile with new data
-        geojson[matchingTileIndex].properties.data.push(data);
 
-        // Recalculate averages
-        let avgdb = 0,
-            dbCount = 0,
-            avgloud = 0;
 
-        for (let j = 0; j < geojson[matchingTileIndex].properties.data.length; j++) {
-            if (geojson[matchingTileIndex].properties.data[j].decibel !== null) {
-                avgdb += geojson[matchingTileIndex].properties.data[j].decibel.avg;
-                dbCount += 1;
-            }
-            avgloud += geojson[matchingTileIndex].properties.data[j].loudness;
+        if (matchingTileQuery.rows.length > 0) {
+            const matchingTile = matchingTileQuery.rows[0];
+
+            // Update the noise_report_data table with new data
+            await client.query(`
+                INSERT INTO noise_report_data (report_id, dbavg, dbmax, dbdevice, time, date, loudness, feeling, tags)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            `, [
+                matchingTile.id,         // $1
+                data.decibel.avg,        // $2
+                data.decibel.max,        // $3 (assuming dbmax is the same as avgdB, adjust accordingly)
+                data.decibel.max,        // $4
+                data.time,               // $5
+                data.date,               // $6
+                data.loudness,           // $7
+                data.feeling,            // $8
+                ["0"],    // $9 (assuming data.tags is an array)
+            ]);
+
+            // Recalculate averages in the noise_reports table
+            const newAveragesQuery = await client.query(`
+                SELECT AVG(dbavg) AS newAvgdB, AVG(loudness) AS newAvgLoud
+                FROM noise_report_data
+                WHERE report_id = $1
+            `, [matchingTile.id]);
+
+            const newAvgdB = newAveragesQuery.rows[0].newavgdb;
+            const newAvgLoud = newAveragesQuery.rows[0].newavgloud;
+
+            // Update averages in the noise_reports table
+            await client.query(`
+                UPDATE noise_reports
+                SET avgdB = $1, avgLoud = $2
+                WHERE id = $3
+            `, [newAvgdB, newAvgLoud, matchingTile.id]);
+
+            res.json({ success: true, message: 'Data updated successfully' });
+        } else {
+            res.status(404).json({ success: false, message: 'Tile not found' });
         }
-
-        geojson[matchingTileIndex].properties.avgdB = Math.round((avgdb / dbCount) * 100) / 100;
-        geojson[matchingTileIndex].properties.avgLoud = Math.round(
-            (avgloud / geojson[matchingTileIndex].properties.data.length) * 100
-        ) / 100;
-
-        res.json({ success: true, message: 'Data updated successfully' });
-    } else {
-        res.status(404).json({ success: false, message: 'Tile not found' });
+    } catch (error) {
+        console.error('Error updating tile data:', error);
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
+
 
 //used to parse array inputs for sources
 function parseTags(tagsInput) {

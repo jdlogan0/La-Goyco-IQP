@@ -440,10 +440,7 @@ async function addToTile() {
         let longMatch = geoData[i].geometry.coordinates[0][0][0] == reportTile[1];
         let latMatch = geoData[i].geometry.coordinates[0][0][1] == reportTile[0];
         if (latMatch && longMatch) {
-            // api call to add to db
-            console.log("UPDATE" + reportTile, reportData);
 
-            //THIS DOESNT WORK YET
             try {
                 const response = await fetch('/api/updateTile', {
                     method: 'POST',
@@ -451,7 +448,7 @@ async function addToTile() {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        tile: reportTile,
+                        tileCoord: reportTile,
                         data: reportData,
                     }),
                 });
@@ -459,16 +456,16 @@ async function addToTile() {
                 if (response.ok) {
                     const result = await response.json();
                     console.log(result);
-                    // Handle success, e.g., show a success message to the user
+
+
                 } else {
                     console.error('Error:', response.statusText);
-                    // Handle error, e.g., show an error message to the user
+
                 }
             } catch (error) {
                 console.error('Error:', error.message);
-                // Handle unexpected errors
-            }
 
+            }
             tileExists = true;
             geoLayer.resetStyle();
         }
