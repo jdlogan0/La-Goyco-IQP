@@ -138,7 +138,7 @@ function onMapClick(e) {
     }
     else {
         //for testing
-        alert(e.latlng.lat + ", "+ e.latlng.lng);
+        //alert(e.latlng.lat + ", "+ e.latlng.lng);
     }
 }
 map.on('click', onMapClick);
@@ -159,6 +159,7 @@ let reportData =
         "max" : 70,
         "device" : ""
     },
+    "date" : "",
     "time" : "",
     "loudness" : 5,
     "feeling" : "",
@@ -202,8 +203,8 @@ const dbForm = document.getElementById("dbForm");
 dbForm.addEventListener("submit", dbSubmit);
 function dbSubmit(event) {
     event.preventDefault();
-    reportData.decibel.avg = document.querySelector("#avg").value;
-    reportData.decibel.max = document.querySelector("#max").value;
+    reportData.decibel.avg = parseInt(document.querySelector("#avg").value);
+    reportData.decibel.max = parseInt(document.querySelector("#max").value);
     reportData.decibel.device = document.querySelector("#device").value;
 
     dbForm.reset();
@@ -413,15 +414,19 @@ function mapSubmit(event) {
         reportData.decibel = null;
     }
 
+    reportData.date = document.querySelector("#date").value;
     reportData.time = document.querySelector("#time").value;
-    reportData.loudness = document.querySelector("#perception").value;
-    reportData.feeling = document.querySelector("#feeling").value;
+    reportData.loudness = parseInt(document.querySelector("#perception").value);
+    reportData.feeling = parseInt(document.querySelector("#feeling").value);
     reportData.tags = document.querySelector("#tagSearch").value;
     addToTile();
 
     mapForm.reset();
     dbForm.reset();
-    popup.style.display = "none";
+
+    //replace this to have "data submitted!"
+    info.style.display = "block";
+    report.style.display = "none";
 };
 function addToTile() {
     let tileExists = false;
@@ -433,9 +438,19 @@ function addToTile() {
             geojson[i].properties.data.push(reportData);
 
             //calc new averages
-            geojson[i].properties.avgdB = (geojson[i].properties.avgdB + reportData.decibel.avg)/geojson[i].properties.data.length;
-            geojson[i].properties.avgLoud = (geojson[i].properties.avgLoud + reportData.loudness)/geojson[i].properties.data.length;
+            let avgdb = 0, dbCount = 0, avgloud = 0;
+            for (let j = 0; j < geojson[i].properties.data.length; j++) {
+                if (geojson[i].properties.data[j].decibel != null) {
+                    avgdb += geojson[i].properties.data[j].decibel.avg;
+                    dbCount += 1;
+                }
+                avgloud = avgloud + geojson[i].properties.data[j].loudness;
+            }
+            geojson[i].properties.avgdB = Math.round((avgdb/dbCount) * 100) / 100;
+            geojson[i].properties.avgLoud = Math.round((avgloud/geojson[i].properties.data.length)*100)/100;
+
             tileExists = true;
+            geoLayer.resetStyle();
         }
     }
     if (!tileExists) {
@@ -471,7 +486,7 @@ function createTile(coords, data) {
     geojson.push(geoFormat);
 
     geoLayer.addData(geoFormat);
-    resetStyle(geoLayer);
+    geoLayer.resetStyle();
 
 }
 
@@ -603,8 +618,11 @@ function showData(properties, coords) {
         blockContent.appendChild(document.createElement("br"));
 
         const timeHeader = document.createElement("h4");
-        timeHeader.innerHTML = "Time";
+        timeHeader.innerHTML = "Date & Time";
         blockContent.appendChild(timeHeader);
+        const date = document.createElement("p");
+        date.innerHTML = currentReport.date;
+        blockContent.appendChild(date);
         const time = document.createElement("p");
         time.innerHTML = currentReport.time;
         blockContent.appendChild(time);
