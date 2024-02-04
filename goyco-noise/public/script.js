@@ -2,7 +2,6 @@
 /* ==========================================================================
 General map setup
 ========================================================================== */
-
 //size of grid tiles
 let gridSize = .00072;
 
@@ -84,11 +83,10 @@ let geoData;
 let geoLayer;
 
 //fetch GeoJSON data
-fetch('/api/geojson')
+fetch('/api/getTiles')
     .then(response => response.json())
     .then(data => {
         geoData = data;
-        console.log(geoData);
 
         // add GeoJSON Layer
         geoLayer = L.geoJSON(geoData, {
@@ -99,7 +97,6 @@ fetch('/api/geojson')
     .catch(error => {
         console.error('Error fetching GeoJSON data:', error);
     });
-
 
 
 function styleGeo(feature) {
@@ -171,7 +168,6 @@ let reportData =
     "feeling": "",
     "tags": []
 }
-
 
 const backData = document.getElementById("backData");
 const backReport = document.getElementById("backReport");
@@ -436,24 +432,23 @@ async function mapSubmit(event) {
     info.style.display = "block";
     report.style.display = "none";
 };
+
+//SUBMIT NEW REPORTS
 async function addToTile() {
     let tileExists = false;
     for (let i = 0; i < geoData.length; i++) {
         let longMatch = geoData[i].geometry.coordinates[0][0][0] == reportTile[1];
         let latMatch = geoData[i].geometry.coordinates[0][0][1] == reportTile[0];
         if (latMatch && longMatch) {
-            // api call to add to db
-            console.log(reportTile, reportData);
 
-            //THIS DOESNT WORK YET
             try {
-                const response = await fetch('/api/updateDataToTile', {
+                const response = await fetch('/api/updateTile', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        tile: reportTile,
+                        tileCoord: reportTile,
                         data: reportData,
                     }),
                 });
@@ -461,16 +456,16 @@ async function addToTile() {
                 if (response.ok) {
                     const result = await response.json();
                     console.log(result);
-                    // Handle success, e.g., show a success message to the user
+
+
                 } else {
                     console.error('Error:', response.statusText);
-                    // Handle error, e.g., show an error message to the user
+
                 }
             } catch (error) {
                 console.error('Error:', error.message);
-                // Handle unexpected errors
-            }
 
+            }
             tileExists = true;
             geoLayer.resetStyle();
         }
@@ -509,8 +504,8 @@ async function createTile(coords, data) {
 
     // api call to add to db
     try {
-        console.log(geoFormat);
-        const response = await fetch('/api/geojson', {
+        console.log("ADDING NEW TILE" + geoFormat);
+        const response = await fetch('/api/addTile', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -563,7 +558,43 @@ const bottomLeft = document.getElementById("labelGrid6");
 
 
 //showData
-function showData(properties, coords) {
+async function showData(properties, coords) {
+
+    let tileData;
+    try {
+        const response = await fetch('/api/getTileInfo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                coords: coords,
+            }),
+        })
+        tileData = await response.json();
+        tileData = tileData[0]
+
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+    let reportData;
+    try {
+        const response = await fetch('/api/getReports', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: tileData.id,
+            }),
+        })
+        reportData = await response.json();
+
+
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+
     tName.innerHTML = "Tile " + coords[0][1] + ", " + coords[0][0];
     //put tooltip here to explain coord title - coordinates of top left corner of tile, .00018 size
 
@@ -577,7 +608,7 @@ function showData(properties, coords) {
     bottomLeft.style.textAlign = "right";
 
     //set color for tile visual
-    document.getElementById("labelGrid4").style.backgroundColor = getColorDB(properties.avgdB) + "4d";
+    document.getElementById("labelGrid4").style.backgroundColor = getColorDB(tileData.avgdb) + "4d";
 
     //hide info + report page, show data page
     info.style.display = "none";
@@ -596,26 +627,24 @@ function showData(properties, coords) {
     statBlock.appendChild(statHeader);
 
     const reportNum = document.createElement("p");
-    reportNum.innerHTML = "Number of reports: " + properties.data.length;
+    reportNum.innerHTML = "Number of reports: " + reportData.length;
     statBlock.appendChild(reportNum);
     const tileDB = document.createElement("p");
-    if (properties.avgdB != null) {
-        tileDB.innerHTML = "Average decibel level: " + properties.avgdB;
+    if (tileData.avgdb != null) {
+        tileDB.innerHTML = "Average decibel level: " + tileData.avgdb;
     } else {
         tileDB.innerHTML = "Average decibel level: N/A";
     }
     statBlock.appendChild(tileDB);
     const tileLoud = document.createElement("p");
-    tileLoud.innerHTML = "Average subjective loudness (0-10): " + properties.avgLoud;
+    tileLoud.innerHTML = "Average subjective loudness (0-10): " + tileData.avgloud;
     statBlock.appendChild(tileLoud);
-    statBlock.style.backgroundColor = getColorDB(properties.avgdB) + "4d";
+    statBlock.style.backgroundColor = getColorDB(tileData.avgdb) + "4d";
     dataBlocks.appendChild(statBlock);
 
-    //data from tile
-    let dataArr = properties.data;
-
     //go through every report and create a block for it
-    for (let i = 0; i < properties.data.length; i++) {
+    for (let i = 0; i < reportData.length; i++) {
+
         const dataBlock = document.createElement("div");
         dataBlock.className = "data";
 
@@ -623,7 +652,7 @@ function showData(properties, coords) {
         blockContent.className = "blockContent";
         blockContent.id = "report" + i + "Content";
 
-        let currentReport = dataArr[i]
+        let currentReport = reportData[i]
 
         const blockHeader = document.createElement("button");
         blockHeader.innerHTML = "Report #" + (i + 1) + "<span class = \"collapseIcon\" id = \"icon" + i + "\">+</span>";
@@ -637,22 +666,21 @@ function showData(properties, coords) {
         decibelHeader.innerHTML = "Decibel Data";
         blockContent.appendChild(decibelHeader);
 
-        //show decibel data if it exists
-        if (currentReport.decibel != null) {
+        if (currentReport.dbavg != null) {
             const avgdB = document.createElement("p");
-            avgdB.innerHTML = "Average decibel level: " + currentReport.decibel.avg;
+            avgdB.innerHTML = "Average decibel level: " + currentReport.dbavg;
             blockContent.appendChild(avgdB);
 
             const maxdB = document.createElement("p");
-            maxdB.innerHTML = "Max decibel level " + currentReport.decibel.max;
+            maxdB.innerHTML = "Max decibel level " + currentReport.dbmax;
             blockContent.appendChild(maxdB);
 
             const device = document.createElement("p");
-            device.innerHTML = "Device used for measurement: " + currentReport.decibel.device;
+            device.innerHTML = "Device used for measurement: " + currentReport.dbdevice;
             blockContent.appendChild(device);
 
             //set block color to tile color
-            dataBlock.style.backgroundColor = getColorDB(currentReport.decibel.avg) + "4d";
+            dataBlock.style.backgroundColor = getColorDB(currentReport.dbavg) + "4d";
         }
         else {
             const noDB = document.createElement("p");
