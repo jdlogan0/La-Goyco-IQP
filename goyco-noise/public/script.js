@@ -412,6 +412,14 @@ mapForm.addEventListener("submit", mapSubmit);
 async function mapSubmit(event) {
     event.preventDefault();
 
+    const selectedTags = Array.from(document.querySelectorAll("#tagDropdown button.selected"))
+        .map(tagButton => tagButton.textContent.trim());
+
+    // Display selected tags
+    const selectedTagsDisplay = document.getElementById("selectedTagsDisplay");
+    selectedTagsDisplay.textContent = selectedTags.join(', ');
+
+
     //check if decibel vals entered, if not set to null
     if (reportData.decibel.avg == null) {
         reportData.decibel = null;
@@ -432,6 +440,11 @@ async function mapSubmit(event) {
     info.style.display = "block";
     report.style.display = "none";
 };
+
+
+
+
+
 
 //SUBMIT NEW REPORTS
 async function addToTile() {

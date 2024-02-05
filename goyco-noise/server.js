@@ -52,7 +52,7 @@ app.post('/api/addTile', async (req, res) => {
             reportId,   // $1
             firstData.decibel.avg,      // $2
             firstData.decibel.max,      // $3 (assuming dbmax is the same as avgdB, adjust accordingly)
-            firstData.decibel.max,      // $4
+            firstData.decibel.device,      // $4
             firstData.time,       // $5
             firstData.date,       // $6
             firstData.loudness,   // $7

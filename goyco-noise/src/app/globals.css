@@ -159,6 +159,14 @@ footer {
   padding: 30px;
 }
 
+.page h2 {
+  font-size: 30px;
+}
+
+.page p {
+  font-size: 20px;
+}
+
 .page a {
   text-decoration: none;
   color: #3e8885;
