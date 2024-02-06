@@ -1,2 +1,3 @@
-# La-Goyco-IQP
-La Goyco IQP noise mapping website
+La Goyco Noise Monitoring System
+
+Use node server.js to start up the app

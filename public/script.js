@@ -359,7 +359,7 @@ function displayLocCoords(lat, long) {
 }
 
 //Subjective loudness slider
-const loudDesc = ["No noise at all", "1 desc", "2 desc", "3 desc", "4 desc", "pleasant i guess?", "6 desc", "7 desc", "8 desc", "9 desc", "Sitting next to a jet taking off"];
+const loudDesc = ["Silence", "Light noise (Ex: library)", "Everyday noise (Ex: conversation)", "Moderate noise (Ex: busy hotel lobby)", "Loud noise (Ex: concert)", "Unbearable levels of noise (Ex: jackhammer)"];
 const loudRange = document.getElementById("perception");
 const loudTxt = document.getElementById("loudTxt");
 let loudCurrent = document.getElementById("perceptionNum");
@@ -378,11 +378,21 @@ feelingRange.oninput = function (e) {
 };
 
 
-//tag stuff
+let selectedTags = [];
+
 function hideTags() {
     document.getElementById("tagSearch").value = "";
     document.getElementById("tagDropdown").style.display = "none";
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    let buttons = document.querySelectorAll('.tagContainer .dropdown button');
+    buttons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            selectTag(this.textContent.trim());
+        });
+    });
+});
 
 function filterTags() {
     let input = document.getElementById("tagSearch");
@@ -402,9 +412,16 @@ function filterTags() {
     dropdown.style.display = "block";
 }
 
-function addTag(tag) {
-
+function selectTag(tag) {
+    console.log(tag);
+    selectedTags.push(tag);
+    updateSelectedTagsDisplay();
 }
+
+function updateSelectedTagsDisplay() {
+    document.getElementById("selectedTagsDisplay").innerText = selectedTags.join(", ");
+}
+
 
 //Submit form
 const mapForm = document.getElementById("mapForm");
@@ -419,7 +436,6 @@ async function mapSubmit(event) {
     const selectedTagsDisplay = document.getElementById("selectedTagsDisplay");
     selectedTagsDisplay.textContent = selectedTags.join(', ');
 
-
     //check if decibel vals entered, if not set to null
     if (reportData.decibel.avg == null) {
         reportData.decibel = null;
@@ -430,6 +446,7 @@ async function mapSubmit(event) {
     reportData.loudness = parseInt(document.querySelector("#perception").value);
     reportData.feeling = parseInt(document.querySelector("#feeling").value);
     reportData.tags = document.querySelector("#tagSearch").value;
+    //possibly reformat tags to be an array of strings??
 
     addToTile();
 
@@ -440,11 +457,6 @@ async function mapSubmit(event) {
     info.style.display = "block";
     report.style.display = "none";
 };
-
-
-
-
-
 
 //SUBMIT NEW REPORTS
 async function addToTile() {
@@ -468,8 +480,6 @@ async function addToTile() {
 
                 if (response.ok) {
                     const result = await response.json();
-                    console.log(result);
-
 
                 } else {
                     console.error('Error:', response.statusText);
@@ -487,7 +497,6 @@ async function addToTile() {
         createTile(reportTile, reportData);
     }
 }
-
 
 //create tile if none exist at that point
 async function createTile(coords, data) {
@@ -517,7 +526,6 @@ async function createTile(coords, data) {
 
     // api call to add to db
     try {
-        console.log("ADDING NEW TILE" + geoFormat);
         const response = await fetch('/api/addTile', {
             method: 'POST',
             headers: {
@@ -530,7 +538,6 @@ async function createTile(coords, data) {
 
         if (response.ok) {
             const result = await response.json();
-            console.log(result);
 
         } else {
             console.error('Error:', response.statusText);
@@ -544,7 +551,6 @@ async function createTile(coords, data) {
     geoLayer.resetStyle();
 
 }
-
 
 /* ==========================================================================
 Displaying and filtering data
@@ -567,8 +573,6 @@ const topLeft = document.getElementById("labelGrid0");
 const topRight = document.getElementById("labelGrid2");
 const bottomRight = document.getElementById("labelGrid8");
 const bottomLeft = document.getElementById("labelGrid6");
-
-
 
 //showData
 async function showData(properties, coords) {
@@ -736,9 +740,7 @@ async function showData(properties, coords) {
             tags.innerHTML += ", " + currentReport.tags[j];
         }
         blockContent.appendChild(tags);
-
         dataBlock.appendChild(blockContent);
-
         dataBlocks.appendChild(dataBlock);
     }
 }

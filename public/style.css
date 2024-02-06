@@ -460,3 +460,9 @@ form button {
 .popup input:focus {
   outline: 2px solid #82dcd8;
 }
+
+#dbChart {
+  width: 90%;
+  height: 400px;
+  margin: 0px 5%;
+}

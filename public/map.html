@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IQP test | map</title>
+    <title>La Goyco Noise Monitoring | Map</title>
     <link rel="stylesheet" href="style.css" />
     <link
       rel="stylesheet"
@@ -94,15 +94,15 @@
               <br />
               <br />
 
-              <label for="perception">Loudness on a Scale from 0 to 10</label>
+              <label for="perception">Loudness on a Scale from 0 to 5</label>
               <div class="slidecontainer">
-                <div id="perceptionNum" class="num">5</div>
-                <div id="loudTxt">Neutral</div>
+                <div id="perceptionNum" class="num">2</div>
+                <div id="loudTxt">Silence</div>
                 <input
                   type="range"
                   min="0"
-                  max="10"
-                  value="5"
+                  max="5"
+                  value="0"
                   class="slider"
                   id="perception"
                 />
@@ -152,6 +152,7 @@
                   <button onclick="selectTag('Outdoor')">Outdoor</button>
                 </div>
               </div>
+
               <br />
               <div id="tagDisplay">
                 Selected Tags: <span id="selectedTagsDisplay"></span>

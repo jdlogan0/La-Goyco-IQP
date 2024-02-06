@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>IQP test | home</title>
+        <title>La Goyco Noise Monitoring | Home </title>
         <link rel="stylesheet" href="/style.css" />
       </Head>
 
