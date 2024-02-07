@@ -379,11 +379,63 @@ feelingRange.oninput = function (e) {
 
 
 //tag stuff
-function hideTags() {
+
+let tagList = ["Car", "Motorcycle", "Traffic", "Construction", "Wildlife", "Music", "Restaurant", "Bar", "Rain", "Aircraft", "Indoor", "Outdoor"];
+let userTags = [];
+createTags();
+
+function createTags() {
+    for (let i = 0; i < tagList.length; i++) {
+        createTag(tagList[i]);
+    }
+}
+function createTag(tag) {
+    const tagDrop = document.getElementById("tagDropdown");
+    const tagBtn = document.createElement("button");
+    tagBtn.innerHTML = tag;
+    tagBtn.onclick = (event) => {
+        event.preventDefault();
+        addTag(tag);
+        tagBtn.parentNode.removeChild(tagBtn);
+    };
+    tagDrop.appendChild(tagBtn);
+}
+
+function addTag(tag) {
+    userTags.push(tag);
+
+    const selectedTags = document.getElementById("selectedTags");
+    const newTag = document.createElement("div");
+    newTag.className = "tag";
+    newTag.innerHTML = tag;
+
+    const tagX = document.createElement("button");
+    tagX.innerHTML = "X";
+    tagX.className = "tagX";
+    tagX.onclick = (event) => {
+        event.preventDefault();
+        userTags.splice(userTags.indexOf(tag), 1);
+        createTag(tag);
+        tagX.parentNode.parentNode.removeChild(newTag);
+    };
+    newTag.appendChild(tagX);
+
+    selectedTags.appendChild(newTag);
+
     document.getElementById("tagSearch").value = "";
     document.getElementById("tagDropdown").style.display = "none";
 }
 
+function hideTags(event) {
+    if (event.relatedTarget != null) {
+        if (event.relatedTarget.tagName == "BUTTON") {
+            return;
+        }
+    }
+    document.getElementById("tagSearch").value = "";
+    document.getElementById("tagDropdown").style.display = "none";
+}
+  
 function filterTags() {
     let input = document.getElementById("tagSearch");
     let filter = input.value.toUpperCase();
@@ -402,9 +454,6 @@ function filterTags() {
     dropdown.style.display = "block";
 }
 
-function addTag(tag) {
-
-}
 
 //Submit form
 const mapForm = document.getElementById("mapForm");
@@ -421,7 +470,7 @@ async function mapSubmit(event) {
     reportData.time = document.querySelector("#time").value;
     reportData.loudness = parseInt(document.querySelector("#perception").value);
     reportData.feeling = parseInt(document.querySelector("#feeling").value);
-    reportData.tags = document.querySelector("#tagSearch").value;
+    reportData.tags = userTags;
 
     addToTile();
 

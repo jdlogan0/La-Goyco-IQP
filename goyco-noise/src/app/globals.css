@@ -247,6 +247,12 @@ form button {
   left: 2px;
 }
 
+#reportForm h3 {
+  background-color: #82dcd8;
+  padding: 5px;
+  text-align: center;
+}
+
 #perception,
 #perceptionNum {
   vertical-align: middle;
@@ -382,7 +388,37 @@ form button {
 .tagContainer {
   position: relative;
   display: inline-block;
+  margin: 5px;
 }
+.tag {
+  background-color: #82dcd8;
+  color: #424242;
+  border-radius: 20px;
+  margin: 5px;
+  padding: 10px;
+  width: fit-content;
+}
+.tagX {
+  background-color: transparent;
+  border: none;
+  font-size: small;
+  font-weight: bold;
+  padding: 0px;
+  padding-left: 10px;
+  margin: 0px;
+}
+.tagX:hover {
+  background-color: transparent;
+  border: none;
+  font-size: small;
+  font-weight: bolder;
+}
+#selectedTags {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
 
 .dropdown {
   display: none;

@@ -64,14 +64,15 @@
           </div>
           <div class = "txtMain" id = "reportForm">
             <form id = mapForm>
+              <h3>Decibel Level</h3>
+              <p>sentence description here - decibel data encouraged, link to device page</p>
               <div id = "db">
-                <label for="enterDB">Decibel Data</label>
-                <br>
                 <button id = "enterDB">Input Decibel Levels</button>
               </div>
               <br>
+              <h3>Location</h3>
+              <p>sentence description here - privacy, exact location not uploaded, 3 methods</p>
               <div id = "location">
-                <label for="locBtns">Location</label>
                 <div class = "btnGroup" id = "locBtns">
                   <button id = "curLoc">Current Location</button>
                   <button id = "selectLoc">Select on Map</button>
@@ -79,15 +80,16 @@
                 </div>
               </div>
               <br>
-              <label for="time">Date & Time</label>
-              <br>
+              <h3>Date & Time</h3>
+              <p>sentence description here - why we need to know date/time</p>
               <input type="date" id="date" name="date" required/>
               <br>
               <input type="time" id="time" name="time" required/>
               <br>
               <br>
 
-              <label for="perception">Loudness on a Scale from 0 to 10</label>
+              <h3>Subjective Loudness</h3>
+              <p>On a scale from 1 to 10, how loud is it?</p>
               <div class="slidecontainer">
                 <div id = "perceptionNum" class = "num">5</div>
                 <div id="loudTxt">Neutral</div>
@@ -95,33 +97,23 @@
               </div>
               <br>
 
-              <label for="feeling">Feeling</label>
+              <h3>Associated Feeling</h3>
+              <p>What feeling do you associate with the noise around you? How pleasant is the sound?</p>
               <div class="slidecontainer">
                 <div id="emoji" class = "num">😀</div>
                 <input type="range" min="0" max="4" value="0" class="slider" id="feeling">
               </div>
               <br>
 
-              <label for="tagSearch">Tags (noise type, measurement conditions)</label>
-              <br>
-                <div class="tagContainer">
-                  <input type="text" placeholder="Search tags..." id="tagSearch" onkeyup="filterTags()" onfocusout = "hideTags()">
-                  <div id="tagDropdown" class="dropdown">
-                    <button>Car</button>
-                    <button>Motorcycle</button>
-                    <button>Traffic</button>
-                    <button>Construction</button>
-                    <button>Wildlife</button>
-                    <button>Music</button>
-                    <button>Restaurant</button>
-                    <button>Bar</button>
-                    <button>Rain</button>
-                    <button>Aircraft</button>
-                    <button>Indoor</button>
-                    <button>Outdoor</button>
-                  </div>
+              <h3>Tags</h3>
+              <p>Use tags to describe the noise type and measurement conditions.</p>
+              <div class="tagContainer">
+                <input type="text" placeholder="Search tags..." id="tagSearch" onkeyup="filterTags()" onfocusout = "hideTags(window.event)">
+                <div id="tagDropdown" class="dropdown">
                 </div>
-                <br>
+              </div>
+              <br>
+              <div id = "selectedTags"></div>
               <br>
 
               <button type = "submit">Submit</button>
