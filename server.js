@@ -41,6 +41,8 @@ app.post('/api/addTile', async (req, res) => {
 
 
         const firstData = dataPoint.data[0];
+        let parsedTags = parseTags(firstData.tags)
+
 
         await client.query(`
     INSERT INTO noise_report_data (report_id, dbavg, dbmax, dbdevice, time, date, loudness, feeling, tags)
@@ -54,7 +56,7 @@ app.post('/api/addTile', async (req, res) => {
             firstData.date,       // $6
             firstData.loudness,   // $7
             firstData.feeling,    // $8
-            ["firstData.tags"]       // FIX LATER
+            parsedTags     // $9
         ]);
 
 
@@ -94,7 +96,6 @@ app.post('/api/getReports', async (req, res) => {
         const { id } = req.body;
 
         const query = `SELECT * FROM noise_report_data WHERE report_id = $1`;
-        console.log(id);
 
         const reportData = await client.query(query, [id]);
 
@@ -221,7 +222,7 @@ app.post('/api/updateTile', async (req, res) => {
 });
 
 
-//used to parse array inputs for sources
+//parse string with commas to array
 function parseTags(tagsInput) {
     try {
         // Check if the input is a string

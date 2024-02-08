@@ -359,7 +359,7 @@ function displayLocCoords(lat, long) {
 }
 
 //Subjective loudness slider
-const loudDesc = ["Silence", "Light noise (Ex: library)", "Everyday noise (Ex: conversation)", "Moderate noise (Ex: busy hotel lobby)", "Loud noise (Ex: concert)", "Unbearable levels of noise (Ex: jackhammer)"];
+const loudDesc = ["No noise at all", "1 desc", "2 desc", "3 desc", "4 desc", "pleasant i guess?", "6 desc", "7 desc", "8 desc", "9 desc", "Sitting next to a jet taking off"];
 const loudRange = document.getElementById("perception");
 const loudTxt = document.getElementById("loudTxt");
 let loudCurrent = document.getElementById("perceptionNum");
@@ -378,21 +378,63 @@ feelingRange.oninput = function (e) {
 };
 
 
-let selectedTags = [];
+//tag stuff
 
-function hideTags() {
+let tagList = ["Car", "Motorcycle", "Traffic", "Construction", "Wildlife", "Music", "Restaurant", "Bar", "Rain", "Aircraft", "Indoor", "Outdoor"];
+let userTags = [];
+createTags();
+
+function createTags() {
+    for (let i = 0; i < tagList.length; i++) {
+        createTag(tagList[i]);
+    }
+}
+function createTag(tag) {
+    const tagDrop = document.getElementById("tagDropdown");
+    const tagBtn = document.createElement("button");
+    tagBtn.innerHTML = tag;
+    tagBtn.onclick = (event) => {
+        event.preventDefault();
+        addTag(tag);
+        tagBtn.parentNode.removeChild(tagBtn);
+    };
+    tagDrop.appendChild(tagBtn);
+}
+
+function addTag(tag) {
+    userTags.push(tag);
+
+    const selectedTags = document.getElementById("selectedTags");
+    const newTag = document.createElement("div");
+    newTag.className = "tag";
+    newTag.innerHTML = tag;
+
+    const tagX = document.createElement("button");
+    tagX.innerHTML = "X";
+    tagX.className = "tagX";
+    tagX.onclick = (event) => {
+        event.preventDefault();
+        userTags.splice(userTags.indexOf(tag), 1);
+        createTag(tag);
+        tagX.parentNode.parentNode.removeChild(newTag);
+    };
+    newTag.appendChild(tagX);
+
+    selectedTags.appendChild(newTag);
+
     document.getElementById("tagSearch").value = "";
     document.getElementById("tagDropdown").style.display = "none";
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    let buttons = document.querySelectorAll('.tagContainer .dropdown button');
-    buttons.forEach(function (button) {
-        button.addEventListener('click', function () {
-            selectTag(this.textContent.trim());
-        });
-    });
-});
+function hideTags(event) {
+    if (event.relatedTarget != null) {
+        if (event.relatedTarget.tagName == "BUTTON") {
+            return;
+        }
+    }
+    document.getElementById("tagSearch").value = "";
+    document.getElementById("tagDropdown").style.display = "none";
+}
 
 function filterTags() {
     let input = document.getElementById("tagSearch");
@@ -412,29 +454,12 @@ function filterTags() {
     dropdown.style.display = "block";
 }
 
-function selectTag(tag) {
-    console.log(tag);
-    selectedTags.push(tag);
-    updateSelectedTagsDisplay();
-}
-
-function updateSelectedTagsDisplay() {
-    document.getElementById("selectedTagsDisplay").innerText = selectedTags.join(", ");
-}
-
 
 //Submit form
 const mapForm = document.getElementById("mapForm");
 mapForm.addEventListener("submit", mapSubmit);
 async function mapSubmit(event) {
     event.preventDefault();
-
-    const selectedTags = Array.from(document.querySelectorAll("#tagDropdown button.selected"))
-        .map(tagButton => tagButton.textContent.trim());
-
-    // Display selected tags
-    const selectedTagsDisplay = document.getElementById("selectedTagsDisplay");
-    selectedTagsDisplay.textContent = selectedTags.join(', ');
 
     //check if decibel vals entered, if not set to null
     if (reportData.decibel.avg == null) {
@@ -445,8 +470,7 @@ async function mapSubmit(event) {
     reportData.time = document.querySelector("#time").value;
     reportData.loudness = parseInt(document.querySelector("#perception").value);
     reportData.feeling = parseInt(document.querySelector("#feeling").value);
-    reportData.tags = document.querySelector("#tagSearch").value;
-    //possibly reformat tags to be an array of strings??
+    reportData.tags = userTags;
 
     addToTile();
 
@@ -498,6 +522,7 @@ async function addToTile() {
     }
 }
 
+
 //create tile if none exist at that point
 async function createTile(coords, data) {
     //flipped array for geojson
@@ -538,6 +563,7 @@ async function createTile(coords, data) {
 
         if (response.ok) {
             const result = await response.json();
+            console.log(result);
 
         } else {
             console.error('Error:', response.statusText);
@@ -551,6 +577,7 @@ async function createTile(coords, data) {
     geoLayer.resetStyle();
 
 }
+
 
 /* ==========================================================================
 Displaying and filtering data
@@ -573,6 +600,8 @@ const topLeft = document.getElementById("labelGrid0");
 const topRight = document.getElementById("labelGrid2");
 const bottomRight = document.getElementById("labelGrid8");
 const bottomLeft = document.getElementById("labelGrid6");
+
+
 
 //showData
 async function showData(properties, coords) {
@@ -740,7 +769,9 @@ async function showData(properties, coords) {
             tags.innerHTML += ", " + currentReport.tags[j];
         }
         blockContent.appendChild(tags);
+
         dataBlock.appendChild(blockContent);
+
         dataBlocks.appendChild(dataBlock);
     }
 }

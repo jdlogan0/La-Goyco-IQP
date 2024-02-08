@@ -28,7 +28,7 @@ export default function Home() {
                 </Link>
               </li>
               <li>
-                <Link href="/handbook">
+                <Link href="/handbook.html">
                   Handbook
                 </Link>
               </li>
@@ -52,7 +52,7 @@ export default function Home() {
           <div className="page">
             <h2>Noise Pollution</h2>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Id leo in vitae turpis massa. Quis ipsum suspendisse ultrices gravida dictum fusce. Sit amet aliquam id diam maecenas ultricies mi. Nunc lobortis mattis aliquam faucibus. Euismod lacinia at quis risus sed vulputate odio. Ante in nibh mauris cursus mattis molestie a. Id semper risus in hendrerit gravida.
+              Learn more about the issue of noise pollution, health implications, and noise policies in Puerto Rico.
             </p>
             <Link href="/about.html">
               Learn more about the project
@@ -65,11 +65,8 @@ export default function Home() {
               src="/map.png"
               alt="noise map"
               width={300}
-              height={200}
-            />
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Id leo in vitae turpis massa.
-            </p>
+              height={200} />
+            <p>View the collected data and contribute to noise monitoring.</p>
             <Link href="/map">
               Contribute and see data
             </Link>
@@ -77,9 +74,7 @@ export default function Home() {
 
           <div className="page">
             <h2>Policy Handbook</h2>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Id leo in vitae turpis massa. Quis ipsum suspendisse ultrices gravida dictum fusce. Sit amet aliquam id diam maecenas ultricies mi.
-            </p>
+            <p>Learn about actions you can take to combat noise pollution.</p>
             <Link href="/handbook">
               Policy resources and overview
             </Link>

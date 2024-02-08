@@ -1,217 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
+  
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Goyco Noise Monitoring | Map</title>
-    <link rel="stylesheet" href="style.css" />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin=""
-    />
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
   </head>
 
   <body>
-    <div class="wrapper">
-      <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-      <header>
+    <div class = "wrapper">
+         <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <header>
         <div class="navbar">
-          <ul class="navlinks">
+          <ul class = "navlinks">
             <li><a href="index.html">Noise Pollution in La Goyco</a></li>
             <li><a href="about.html">About</a></li>
-            <li class="current"><a href="map.html">Map</a></li>
+            <li class = "current"><a href="map.html">Map</a></li>
             <li><a href="handbook.html">Handbook</a></li>
           </ul>
           <div class="languageSelect">
             <button class="langBtn">🌐 English ▾</button>
-            <div class="langOptions">
-              <div class="lang">🌐 English</div>
-              <div class="lang">🌐 Español</div>
+            <div class = "langOptions">
+              <div class = "lang">🌐 English</div>
+              <div class = "lang">🌐 Español</div>
             </div>
+          </button>
           </div>
         </div>
-        <div class="navspace"></div>
-      </header>
+        <div class = "navspace"></div>
+    </header>
 
-      <div class="page flex">
+    <div class = "page flex">
         <div id="map"></div>
-        <div id="mapInfo" class="mapTxt">
-          <div class="txtHeader">
+        <div id = "mapInfo" class = "mapTxt">
+          <div class = "txtHeader">
             <h2>Noise Map</h2>
           </div>
-          <div class="txtMain">
+          <div class = "txtMain">
             <p>This is a map of noise data collected by the community!</p>
-            <p>
-              Click on a square on the grid to see data from that area. A report
-              may include the decibel level, type of noise (traffic, wildlife,
-              music, etc.), and percieved loudness.
-            </p>
-            <button class="reportBtn" id="reportBtn">Add to the map!</button>
+            <p>Click on a square on the grid to see data from that area. A report may include the decibel level, type of noise (traffic, wildlife, music, etc.), and percieved loudness.</p>
+            <button class = "reportBtn" id = "reportBtn">Add to the map!</button>
           </div>
         </div>
 
-        <div id="mapData" class="mapTxt">
-          <div class="txtHeader">
-            <button class="back" id="backData">X</button>
-            <h2 id="tileName">Tile Name? Position?</h2>
-            <div id="tileLabeled"></div>
+        <div id = "mapData" class = "mapTxt">
+          <div class = "txtHeader">
+            <button class = "back" id = "backData">X</button>
+            <h2 id = "tileName">Tile Name? Position?</h2>
+            <div id = "tileLabeled">
+            </div>
           </div>
-          <div class="txtMain" id="dataBlocks"></div>
+          <div class = "txtMain" id = "dataBlocks">
+          </div>
         </div>
 
-        <div id="mapReport" class="mapTxt">
-          <div class="txHeader">
-            <button class="back" id="backReport">X</button>
+        <div id = "mapReport" class = "mapTxt">
+          <div class = "txHeader">
+            <button class = "back" id = "backReport">X</button>
             <h2>Your Data</h2>
           </div>
-          <div class="txtMain" id="reportForm">
-            <form id="mapForm">
-              <div id="db">
-                <label for="enterDB">Decibel Data</label>
-                <br />
-                <button id="enterDB">Input Decibel Levels</button>
+          <div class = "txtMain" id = "reportForm">
+            <form id = mapForm>
+              <h3>Decibel Level</h3>
+              <p>sentence description here - decibel data encouraged, link to device page</p>
+                <a href="monitors.html">Learn how to monitor noise! ></a>
+              <div id = "db">
+                <button id = "enterDB">Input Decibel Levels</button>
               </div>
-              <br />
-              <div id="location">
-                <label for="locBtns">Location</label>
-                <div class="btnGroup" id="locBtns">
-                  <button id="curLoc">Current Location</button>
-                  <button id="selectLoc">Select on Map</button>
-                  <button id="coordLoc">Coordinates</button>
+              <br>
+              <h3>Location</h3>
+              <p>sentence description here - privacy, exact location not uploaded, 3 methods</p>
+              <div id = "location">
+                <div class = "btnGroup" id = "locBtns">
+                  <button id = "curLoc">Current Location</button>
+                  <button id = "selectLoc">Select on Map</button>
+                  <button id = "coordLoc">Coordinates</button>
                 </div>
               </div>
+              <br>
+              <h3>Date & Time</h3>
+              <p>sentence description here - why we need to know date/time</p>
+              <input type="date" id="date" name="date" required/>
+              <br>
+              <input type="time" id="time" name="time" required/>
+              <br>
+              <br>
 
-              <label for="date">Date</label>
-              <br />
-              <input type="date" id="date" name="date" required />
-
-              <br />
-              <label for="time">Time</label>
-              <br />
-              <input type="time" id="time" name="time" required />
-              <br />
-              <br />
-
-              <label for="perception">Loudness on a Scale from 0 to 5</label>
+              <h3>Subjective Loudness</h3>
+              <p>On a scale from 1 to 10, how loud is it?</p>
               <div class="slidecontainer">
-                <div id="perceptionNum" class="num">2</div>
-                <div id="loudTxt">Silence</div>
-                <input
-                  type="range"
-                  min="0"
-                  max="5"
-                  value="0"
-                  class="slider"
-                  id="perception"
-                />
+                <div id = "perceptionNum" class = "num">5</div>
+                <div id="loudTxt">Neutral</div>
+                <input type="range" min="0" max="10" value="5" class="slider" id="perception">
               </div>
-              <br />
+              <br>
 
-              <label for="feeling">Feeling (fix later)</label>
+              <h3>Associated Feeling</h3>
+              <p>What feeling do you associate with the noise around you? How pleasant is the sound?</p>
               <div class="slidecontainer">
-                <div id="emoji" class="num">😀</div>
-                <input
-                  type="range"
-                  min="0"
-                  max="4"
-                  value="0"
-                  class="slider"
-                  id="feeling"
-                />
+                <div id="emoji" class = "num">😀</div>
+                <input type="range" min="0" max="4" value="0" class="slider" id="feeling">
               </div>
-              <br />
+              <br>
 
-              <label for="tagSearch"
-                >Tags (noise type, measurement conditions)</label
-              >
-              <br />
+              <h3>Tags</h3>
+              <p>Use tags to describe the noise type and measurement conditions.</p>
               <div class="tagContainer">
-                <input
-                  type="text"
-                  placeholder="Search tags..."
-                  id="tagSearch"
-                  onkeyup="filterTags()"
-                  onfocusout="hideTags()"
-                />
+                <input type="text" placeholder="Search tags..." id="tagSearch" onkeyup="filterTags()" onfocusout = "hideTags(window.event)">
                 <div id="tagDropdown" class="dropdown">
-                  <button onclick="selectTag('Car')">Car</button>
-                  <button onclick="selectTag('Motorcycle')">Motorcycle</button>
-                  <button onclick="selectTag('Traffic')">Traffic</button>
-                  <button onclick="selectTag('Construction')">
-                    Construction
-                  </button>
-                  <button onclick="selectTag('Wildlife')">Wildlife</button>
-                  <button onclick="selectTag('Music')">Music</button>
-                  <button onclick="selectTag('Restaurant')">Restaurant</button>
-                  <button onclick="selectTag('Bar')">Bar</button>
-                  <button onclick="selectTag('Rain')">Rain</button>
-                  <button onclick="selectTag('Aircraft')">Aircraft</button>
-                  <button onclick="selectTag('Indoor')">Indoor</button>
-                  <button onclick="selectTag('Outdoor')">Outdoor</button>
                 </div>
               </div>
+              <br>
+              <div id = "selectedTags"></div>
+              <br>
 
-              <br />
-              <div id="tagDisplay">
-                Selected Tags: <span id="selectedTagsDisplay"></span>
-              </div>
-
-              <br />
-
-              <button type="submit">Submit</button>
+              <button type = "submit">Submit</button>
             </form>
+
           </div>
         </div>
+    </div>
+
+    <div class = "popupContainer" id = "dBpopup">
+      <div class = "popup">
+        <form id = "dbForm">
+          <h2 style = "text-align: center;">Decibel Data</h2>
+          <p>Quick desc here, stuff about device recs</p>
+          <label for="avg">Average dB: </label>
+          <input id = "avg" type = "number" min = 25 max = 140 placeholder=60 required></input><br><br>
+          <label for="max">Max dB: </label>
+          <input id = "max" type = "number" min = 25 max = 140 placeholder=70 required></input><br><br>
+          <label for="device">Device used for measurement: </label>
+          <input id = "device" placeholder="NIOSH SLM (iPhone App)"></input><br><br>
+                
+          <button type = "submit" id = "dbSubmit">Submit</button>
+          <button id = "dbCancel">Cancel</button>
+        </form>
       </div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
 
-      <div class="popupContainer" id="dBpopup">
-        <div class="popup">
-          <form id="dbForm">
-            <h2 style="text-align: center">Decibel Data</h2>
-            <p>Quick desc here, stuff about device recs</p>
-            <label for="avg">Average dB: </label>
-            <input
-              id="avg"
-              type="number"
-              min="25"
-              max="140"
-              placeholder="60"
-              required
-            /><br /><br />
-            <label for="max">Max dB: </label>
-            <input
-              id="max"
-              type="number"
-              min="25"
-              max="140"
-              placeholder="70"
-              required
-            /><br /><br />
-            <label for="device">Device used for measurement: </label>
-            <input
-              id="device"
-              placeholder="NIOSH SLM (iPhone App)"
-            /><br /><br />
-
-            <button type="submit" id="dbSubmit">Submit</button>
-            <button id="dbCancel">Cancel</button>
-          </form>
-        </div>
-      </div>
-
-      <script
-        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""
-      ></script>
-
-      <div class="wrapperSpace"></div>
-      <footer>
+     <div class = "wrapperSpace"></div>
+    <footer>
         <p>placeholder for links and copyright and whatnot</p>
-      </footer>
+    </footer>
     </div>
     <script defer src="script.js"></script>
   </body>
+
 </html>
