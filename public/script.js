@@ -1,10 +1,7 @@
-//hi!
-
 
 /* ==========================================================================
 General map setup
 ========================================================================== */
-
 //size of grid tiles
 let gridSize = .00072;
 
@@ -21,7 +18,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 //bounds of map
-let bounds = [[18.454596, -66.066049],[18.447085, -66.050838]]
+let bounds = [[18.454596, -66.066049], [18.447085, -66.050838]]
 map.fitBounds(bounds);
 map.setMaxBounds(bounds);
 
@@ -53,26 +50,26 @@ let goycoCoords = [
     [18.452072, -66.06386],
     [18.453374, -66.063539]
 ]
-const goyco = L.polygon(goycoCoords, {color: 'blue', fill: false}).addTo(map);
+const goyco = L.polygon(goycoCoords, { color: 'blue', fill: false }).addTo(map);
 
-    
+
 function getColorDB(dB) {
     let color = ""
-    if (dB == null) {color = "#6b7e9c";}
-    else if (dB < 10) {color = "#48f702";}
-    else if (dB < 10) {color = "#69f702";}
-    else if (dB < 30) {color = "#89f702";}
-    else if (dB < 40) {color = "#a6f702";}
-    else if (dB < 50) {color = "#b6f702";}
-    else if (dB < 60) {color = "#caf702";}
-    else if (dB < 70) {color = "#e7f702";}
-    else if (dB < 80) {color = "#f7ef02";}
-    else if (dB < 90) {color = "#f7c602";}
-    else if (dB < 100) {color = "#f79902";}
-    else if (dB < 110) {color = "#f77d02";}
-    else if (dB < 130) {color = "#f76002";}
-    else if (dB < 140) {color = "#f73802";}
-    else {color = "#f70202";};
+    if (dB == null) { color = "#6b7e9c"; }
+    else if (dB < 10) { color = "#48f702"; }
+    else if (dB < 10) { color = "#69f702"; }
+    else if (dB < 30) { color = "#89f702"; }
+    else if (dB < 40) { color = "#a6f702"; }
+    else if (dB < 50) { color = "#b6f702"; }
+    else if (dB < 60) { color = "#caf702"; }
+    else if (dB < 70) { color = "#e7f702"; }
+    else if (dB < 80) { color = "#f7ef02"; }
+    else if (dB < 90) { color = "#f7c602"; }
+    else if (dB < 100) { color = "#f79902"; }
+    else if (dB < 110) { color = "#f77d02"; }
+    else if (dB < 130) { color = "#f76002"; }
+    else if (dB < 140) { color = "#f73802"; }
+    else { color = "#f70202"; };
     return color;
 }
 
@@ -82,12 +79,25 @@ Worth noting GeoJSON goes [long, lat] unlike Leaflet's [lat, long]
 geojson var from geojson.js for organization purposes
 ========================================================================== */
 
-//add GeoJSON Layer
-let geoLayer = L.geoJSON(geojson, {
-    style: styleGeo,
-    onEachFeature: onEachFeature
+let geoData;
+let geoLayer;
 
-}).addTo(map);
+//fetch GeoJSON data
+fetch('/api/getTiles')
+    .then(response => response.json())
+    .then(data => {
+        geoData = data;
+
+        // add GeoJSON Layer
+        geoLayer = L.geoJSON(geoData, {
+            style: styleGeo,
+            onEachFeature: onEachFeature
+        }).addTo(map);
+    })
+    .catch(error => {
+        console.error('Error fetching GeoJSON data:', error);
+    });
+
 
 function styleGeo(feature) {
     let thisStyle = {
@@ -107,28 +117,26 @@ function styleGeo(feature) {
 function onEachFeature(feature, layer) {
 
     //white outline with hover
-    layer.on("mouseover",function(e) {
+    layer.on("mouseover", function (e) {
         layer.setStyle({
             stroke: true,
         });
     });
 
     //no outline when mouse leaves
-    layer.on("mouseout",function(e) {
+    layer.on("mouseout", function (e) {
         layer.setStyle({
             stroke: false,
         });
     });
-        
+
     //show data if clicked 
-    layer.on("click",function(e) {
+    layer.on("click", function (e) {
         if (locationMode == false) {
             showData(feature.properties, feature.geometry.coordinates[0]);
         }
     });
 }
-
-
 
 //for picking location by clicking map
 function onMapClick(e) {
@@ -136,13 +144,8 @@ function onMapClick(e) {
         handleLoc(e.latlng.lat, e.latlng.lng);
         locationMode = false;
     }
-    else {
-        //for testing
-        //alert(e.latlng.lat + ", "+ e.latlng.lng);
-    }
 }
 map.on('click', onMapClick);
-
 
 
 /* ==========================================================================
@@ -152,20 +155,19 @@ Input for adding data to the map
 //local vars for responses
 let reportTile;
 
-let reportData = 
+let reportData =
 {
-    "decibel" : {
-        "avg" : 60,
-        "max" : 70,
-        "device" : ""
+    "decibel": {
+        "avg": 60,
+        "max": 70,
+        "device": ""
     },
-    "date" : "",
-    "time" : "",
-    "loudness" : 5,
-    "feeling" : "",
-    "tags" : []
+    "date": "",
+    "time": "",
+    "loudness": 5,
+    "feeling": "",
+    "tags": []
 }
-
 
 const backData = document.getElementById("backData");
 const backReport = document.getElementById("backReport");
@@ -177,15 +179,15 @@ const tName = document.getElementById("tileName");
 const reportbtn = document.getElementById("reportBtn");
 
 //hide/show main and report pages
-backData.onclick = function() {
+backData.onclick = function () {
     info.style.display = "block";
     data.style.display = "none";
 }
-backReport.onclick = function() {
+backReport.onclick = function () {
     info.style.display = "block";
     report.style.display = "none";
 }
-reportbtn.onclick = function() {
+reportbtn.onclick = function () {
     info.style.display = "none";
     data.style.display = "none";
     report.style.display = "block";
@@ -208,6 +210,7 @@ function dbSubmit(event) {
     reportData.decibel.device = document.querySelector("#device").value;
 
     dbForm.reset();
+
     popup.style.display = "none";
 
     const db = document.getElementById("db");
@@ -250,7 +253,7 @@ curLoc.onclick = (event) => {
         navigator.geolocation.getCurrentPosition((position) => {
             handleLoc(position.coords.latitude, position.coords.longitude);
         });
-    } 
+    }
     else {
         alert("Geolocation is not available");
     }
@@ -272,7 +275,7 @@ coordLoc.onclick = (event) => {
 function handleLoc(lat, long) {
     let valid = checkBounds(lat, long);
     if (valid) {
-        let tile = calcLocation(lat,long);
+        let tile = calcLocation(lat, long);
         displayLocCoords(tile[0], tile[1]);
 
         //show tile on map for confirmation
@@ -303,11 +306,11 @@ function checkBounds(x, y) {
     let inside = false;
 
     //loop through polygon edges
-    for (let i = 0; i < lineNum-1; i++) {
-        let edgePt1 = polygon[i], edgePt2 = polygon[i+1];
+    for (let i = 0; i < lineNum - 1; i++) {
+        let edgePt1 = polygon[i], edgePt2 = polygon[i + 1];
 
         let pt1x = edgePt1[0], pt1y = edgePt1[1], pt2x = edgePt2[0], pt2y = edgePt2[1];
-        
+
         let ptInYRange = (pt1y > y) != (pt2y > y);
         let isLeft = x < (pt2x - pt1x) * (y - pt1y) / (pt2y - pt1y) + pt1x;
         if (ptInYRange && isLeft) {
@@ -324,21 +327,21 @@ function invalidLoc() {
 function calcLocation(lat, long) {
     let startPt = bounds[0];
 
-    let distLat = startPt[0]-lat;
-    let distLong = startPt[1]-long;
+    let distLat = startPt[0] - lat;
+    let distLong = startPt[1] - long;
 
-    let boxRow = Math.floor(distLat/gridSize);
-    let boxCol = Math.floor(distLong/gridSize);
+    let boxRow = Math.floor(distLat / gridSize);
+    let boxCol = Math.floor(distLong / gridSize);
 
-    let tileLat = startPt[0] - gridSize*boxRow;
-    let tileLong = startPt[1] - gridSize*boxCol - gridSize;
+    let tileLat = startPt[0] - gridSize * boxRow;
+    let tileLong = startPt[1] - gridSize * boxCol - gridSize;
 
     tileLat = Math.round(tileLat * 100000) / 100000;
     tileLong = Math.round(tileLong * 100000) / 100000;
 
     reportTile = [tileLat, tileLong];
 
-    return(reportTile);
+    return (reportTile);
 }
 function displayLocCoords(lat, long) {
 
@@ -356,21 +359,21 @@ function displayLocCoords(lat, long) {
 }
 
 //Subjective loudness slider
-const loudDesc = ["No noise at all","1 desc","2 desc","3 desc","4 desc","pleasant i guess?", "6 desc", "7 desc", "8 desc", "9 desc", "Sitting next to a jet taking off"];
+const loudDesc = ["Silence", "Light noise (Ex: library)", "Everyday noise (Ex: conversation)", "Moderate noise (Ex: busy hotel lobby)", "Loud noise (Ex: concert)", "Unbearable levels of noise (Ex: jackhammer)"];
 const loudRange = document.getElementById("perception");
 const loudTxt = document.getElementById("loudTxt");
 let loudCurrent = document.getElementById("perceptionNum");
-loudCurrent.innerHTML = loudRange.value; 
-loudRange.oninput = function(e) {
+loudCurrent.innerHTML = loudRange.value;
+loudRange.oninput = function (e) {
     loudTxt.innerHTML = loudDesc[e.target.value];
     loudCurrent.innerHTML = this.value;
-  };
+};
 
 //Feeling slider
-const emojis = ['😀','🙂','😐','🙁','😢'];
+const emojis = ['😀', '🙂', '😐', '🙁', '😢'];
 const feelingRange = document.getElementById("feeling");
 const emoji = document.getElementById("emoji");
-feelingRange.oninput = function(e) {
+feelingRange.oninput = function (e) {
     emoji.innerHTML = emojis[e.target.value];
 };
 
@@ -451,12 +454,13 @@ function filterTags() {
     dropdown.style.display = "block";
 }
 
+
 //Submit form
 const mapForm = document.getElementById("mapForm");
 mapForm.addEventListener("submit", mapSubmit);
-function mapSubmit(event) {
+async function mapSubmit(event) {
     event.preventDefault();
-    
+
     //check if decibel vals entered, if not set to null
     if (reportData.decibel.avg == null) {
         reportData.decibel = null;
@@ -467,6 +471,7 @@ function mapSubmit(event) {
     reportData.loudness = parseInt(document.querySelector("#perception").value);
     reportData.feeling = parseInt(document.querySelector("#feeling").value);
     reportData.tags = userTags;
+
     addToTile();
 
     mapForm.reset();
@@ -476,27 +481,38 @@ function mapSubmit(event) {
     info.style.display = "block";
     report.style.display = "none";
 };
-function addToTile() {
+
+//SUBMIT NEW REPORTS
+async function addToTile() {
     let tileExists = false;
-    for (let i = 0; i < geojson.length; i++) {
-        let longMatch = geojson[i].geometry.coordinates[0][0][0] == reportTile[1];
-        let latMatch = geojson[i].geometry.coordinates[0][0][1] == reportTile[0];
-        if (latMatch && longMatch){
-            //add data to tile
-            geojson[i].properties.data.push(reportData);
+    for (let i = 0; i < geoData.length; i++) {
+        let longMatch = geoData[i].geometry.coordinates[0][0][0] == reportTile[1];
+        let latMatch = geoData[i].geometry.coordinates[0][0][1] == reportTile[0];
+        if (latMatch && longMatch) {
 
-            //calc new averages
-            let avgdb = 0, dbCount = 0, avgloud = 0;
-            for (let j = 0; j < geojson[i].properties.data.length; j++) {
-                if (geojson[i].properties.data[j].decibel != null) {
-                    avgdb += geojson[i].properties.data[j].decibel.avg;
-                    dbCount += 1;
+            try {
+                const response = await fetch('/api/updateTile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        tileCoord: reportTile,
+                        data: reportData,
+                    }),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                } else {
+                    console.error('Error:', response.statusText);
+
                 }
-                avgloud = avgloud + geojson[i].properties.data[j].loudness;
-            }
-            geojson[i].properties.avgdB = Math.round((avgdb/dbCount) * 100) / 100;
-            geojson[i].properties.avgLoud = Math.round((avgloud/geojson[i].properties.data.length)*100)/100;
+            } catch (error) {
+                console.error('Error:', error.message);
 
+            }
             tileExists = true;
             geoLayer.resetStyle();
         }
@@ -505,14 +521,15 @@ function addToTile() {
         createTile(reportTile, reportData);
     }
 }
+
 //create tile if none exist at that point
-function createTile(coords, data) {
+async function createTile(coords, data) {
     //flipped array for geojson
     let coordsArr = [
         [coords[1], coords[0]],
-        [coords[1]+gridSize, coords[0]],
-        [coords[1]+gridSize, coords[0]-gridSize],
-        [coords[1], coords[0]-gridSize]
+        [coords[1] + gridSize, coords[0]],
+        [coords[1] + gridSize, coords[0] - gridSize],
+        [coords[1], coords[0] - gridSize]
     ];
     let avgDecibel = null;
     if (data.decibel != null) {
@@ -523,7 +540,7 @@ function createTile(coords, data) {
         "properties": {
             "avgdB": avgDecibel,
             "avgLoud": data.loudness,
-            "data" : [data]
+            "data": [data]
         },
         "geometry": {
             "type": "Polygon",
@@ -531,13 +548,33 @@ function createTile(coords, data) {
         }
     }
 
-    geojson.push(geoFormat);
+    // api call to add to db
+    try {
+        const response = await fetch('/api/addTile', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                geojson: geoFormat,
+            }),
+        });
 
+        if (response.ok) {
+            const result = await response.json();
+
+        } else {
+            console.error('Error:', response.statusText);
+
+        }
+    } catch (error) {
+        console.error('Error:', error.message);
+
+    }
     geoLayer.addData(geoFormat);
     geoLayer.resetStyle();
 
 }
-
 
 /* ==========================================================================
 Displaying and filtering data
@@ -561,13 +598,47 @@ const topRight = document.getElementById("labelGrid2");
 const bottomRight = document.getElementById("labelGrid8");
 const bottomLeft = document.getElementById("labelGrid6");
 
-
-
 //showData
-function showData(properties, coords) {
+async function showData(properties, coords) {
+
+    let tileData;
+    try {
+        const response = await fetch('/api/getTileInfo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                coords: coords,
+            }),
+        })
+        tileData = await response.json();
+        tileData = tileData[0]
+
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+    let reportData;
+    try {
+        const response = await fetch('/api/getReports', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: tileData.id,
+            }),
+        })
+        reportData = await response.json();
+
+
+    } catch (error) {
+        console.error('Error:', error.message);
+    }
+
     tName.innerHTML = "Tile " + coords[0][1] + ", " + coords[0][0];
     //put tooltip here to explain coord title - coordinates of top left corner of tile, .00018 size
-    
+
     //set coordinates for tile visual
     topLeft.innerHTML = coords[0][1] + ", " + coords[0][0];
     topRight.innerHTML = coords[1][1] + ", " + coords[1][0];
@@ -578,7 +649,7 @@ function showData(properties, coords) {
     bottomLeft.style.textAlign = "right";
 
     //set color for tile visual
-    document.getElementById("labelGrid4").style.backgroundColor = getColorDB(properties.avgdB) + "4d";
+    document.getElementById("labelGrid4").style.backgroundColor = getColorDB(tileData.avgdb) + "4d";
 
     //hide info + report page, show data page
     info.style.display = "none";
@@ -597,26 +668,24 @@ function showData(properties, coords) {
     statBlock.appendChild(statHeader);
 
     const reportNum = document.createElement("p");
-    reportNum.innerHTML = "Number of reports: " + properties.data.length;
+    reportNum.innerHTML = "Number of reports: " + reportData.length;
     statBlock.appendChild(reportNum);
     const tileDB = document.createElement("p");
-    if (properties.avgdB != null) {
-        tileDB.innerHTML = "Average decibel level: " + properties.avgdB;
+    if (tileData.avgdb != null) {
+        tileDB.innerHTML = "Average decibel level: " + tileData.avgdb;
     } else {
         tileDB.innerHTML = "Average decibel level: N/A";
     }
     statBlock.appendChild(tileDB);
     const tileLoud = document.createElement("p");
-    tileLoud.innerHTML = "Average subjective loudness (0-10): " + properties.avgLoud;
+    tileLoud.innerHTML = "Average subjective loudness (0-10): " + tileData.avgloud;
     statBlock.appendChild(tileLoud);
-    statBlock.style.backgroundColor = getColorDB(properties.avgdB) + "4d";
+    statBlock.style.backgroundColor = getColorDB(tileData.avgdb) + "4d";
     dataBlocks.appendChild(statBlock);
 
-    //data from tile
-    let dataArr = properties.data;
-
     //go through every report and create a block for it
-    for (let i = 0; i < properties.data.length; i++) {
+    for (let i = 0; i < reportData.length; i++) {
+
         const dataBlock = document.createElement("div");
         dataBlock.className = "data";
 
@@ -624,11 +693,11 @@ function showData(properties, coords) {
         blockContent.className = "blockContent";
         blockContent.id = "report" + i + "Content";
 
-        let currentReport = dataArr[i]
+        let currentReport = reportData[i]
 
         const blockHeader = document.createElement("button");
-        blockHeader.innerHTML = "Report #" + (i+1) + "<span class = \"collapseIcon\" id = \"icon" + i +"\">+</span>";
-        blockHeader.onclick = function() {
+        blockHeader.innerHTML = "Report #" + (i + 1) + "<span class = \"collapseIcon\" id = \"icon" + i + "\">+</span>";
+        blockHeader.onclick = function () {
             toggleReport(i);
         }
         dataBlock.appendChild(blockHeader);
@@ -638,22 +707,21 @@ function showData(properties, coords) {
         decibelHeader.innerHTML = "Decibel Data";
         blockContent.appendChild(decibelHeader);
 
-        //show decibel data if it exists
-        if (currentReport.decibel != null) {
+        if (currentReport.dbavg != null) {
             const avgdB = document.createElement("p");
-            avgdB.innerHTML = "Average decibel level: " + currentReport.decibel.avg;
+            avgdB.innerHTML = "Average decibel level: " + currentReport.dbavg;
             blockContent.appendChild(avgdB);
 
             const maxdB = document.createElement("p");
-            maxdB.innerHTML = "Max decibel level " + currentReport.decibel.max;
+            maxdB.innerHTML = "Max decibel level " + currentReport.dbmax;
             blockContent.appendChild(maxdB);
 
             const device = document.createElement("p");
-            device.innerHTML = "Device used for measurement: " + currentReport.decibel.device;
+            device.innerHTML = "Device used for measurement: " + currentReport.dbdevice;
             blockContent.appendChild(device);
 
             //set block color to tile color
-            dataBlock.style.backgroundColor = getColorDB(currentReport.decibel.avg)  + "4d";
+            dataBlock.style.backgroundColor = getColorDB(currentReport.dbavg) + "4d";
         }
         else {
             const noDB = document.createElement("p");
@@ -661,7 +729,7 @@ function showData(properties, coords) {
             blockContent.appendChild(noDB);
 
             //set block color to tile color
-            dataBlock.style.backgroundColor = getColorDB(null)  + "4d";
+            dataBlock.style.backgroundColor = getColorDB(null) + "4d";
         }
         blockContent.appendChild(document.createElement("br"));
 
@@ -693,12 +761,10 @@ function showData(properties, coords) {
         const tags = document.createElement("p");
         tags.innerHTML = currentReport.tags[0];
         for (let j = 1; j < currentReport.tags.length; j++) {
-            tags.innerHTML +=  ", " + currentReport.tags[j];
+            tags.innerHTML += ", " + currentReport.tags[j];
         }
         blockContent.appendChild(tags);
-
         dataBlock.appendChild(blockContent);
-
         dataBlocks.appendChild(dataBlock);
     }
 }
@@ -707,7 +773,7 @@ function showData(properties, coords) {
 function toggleReport(reportNum) {
     const reportBlock = document.getElementById("report" + reportNum + "Content");
     const icon = document.getElementById("icon" + reportNum);
-    if (reportBlock.style.height == "fit-content"){
+    if (reportBlock.style.height == "fit-content") {
         reportBlock.style.height = 0;
         icon.innerHTML = "+";
     } else {

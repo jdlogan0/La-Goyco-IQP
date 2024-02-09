@@ -10,7 +10,7 @@ const port = 3000;
 const client = new Client({
     user: 'admin',
     host: 'localhost',
-    database: 'noise-db',
+    database: 'postgres',
     password: 'admin',
     port: 5432,
 });
@@ -20,17 +20,14 @@ client.connect();
 app.use(express.json());
 app.use(express.static('public'));
 
-// Serve static files (including page.js)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Create new entry (new tile) in the database
+// Create new tile in the database
 app.post('/api/addTile', async (req, res) => {
     try {
-        const { geojson } = req.body; // Assuming data is part of the request body
-        console.log(geojson);
+        const { geojson } = req.body;
 
         //  insert data into the noise_reports table
-
         await client.query(`
             INSERT INTO noise_reports (avgdB, avgLoud, geometry)
             VALUES ($1, $2, ST_SetSRID(ST_GeomFromGeoJSON($3), 4326))
@@ -42,8 +39,8 @@ app.post('/api/addTile', async (req, res) => {
         const reportId = reportIdQuery.rows[0].lastval;
         const dataPoint = geojson.properties;
 
-        // Assuming dataPoint is an object containing the required data
-        const firstData = dataPoint.data[0]; // Assuming dataPoint.data[0] is already an object
+
+        const firstData = dataPoint.data[0];
 
         await client.query(`
     INSERT INTO noise_report_data (report_id, dbavg, dbmax, dbdevice, time, date, loudness, feeling, tags)
@@ -51,13 +48,13 @@ app.post('/api/addTile', async (req, res) => {
 `, [
             reportId,   // $1
             firstData.decibel.avg,      // $2
-            firstData.decibel.max,      // $3 (assuming dbmax is the same as avgdB, adjust accordingly)
-            firstData.decibel.max,      // $4
+            firstData.decibel.max,      // $3 (
+            firstData.decibel.device,      // $4
             firstData.time,       // $5
             firstData.date,       // $6
             firstData.loudness,   // $7
             firstData.feeling,    // $8
-            ["firstData.tags"]       // $9
+            ["firstData.tags"]       // FIX LATER
         ]);
 
 
@@ -71,7 +68,6 @@ app.post('/api/addTile', async (req, res) => {
 app.post('/api/getTileInfo', async (req, res) => {
     try {
         const { coords } = req.body;
-
 
         // Use the WKT in the query with ST_MakeValid
         const query = `
@@ -100,10 +96,8 @@ app.post('/api/getReports', async (req, res) => {
         const query = `SELECT * FROM noise_report_data WHERE report_id = $1`;
         console.log(id);
 
-        // Execute the query with the provided id
         const reportData = await client.query(query, [id]);
 
-        // Send the results back in the response
         res.json(reportData.rows);
 
     } catch (error) {
@@ -140,7 +134,7 @@ app.get('/api/getTiles', async (req, res) => {
                         time: d.time,
                         loudness: parseInt(d.loudness),
                         feeling: parseInt(d.feeling),
-                        tags: parseTags(d.tags), // Parse the tags
+                        tags: parseTags(d.tags), // Parse the tags need to update
                     })),
                 },
                 geometry: {
@@ -169,7 +163,6 @@ app.listen(port, () => {
 });
 
 // Update data of a specific tile
-//the query will first add thje new data to the noise_report_data table and then update the noise_reports table by updating the average 
 app.post('/api/updateTile', async (req, res) => {
     const { tileCoord, data } = req.body;
 
@@ -179,7 +172,6 @@ app.post('/api/updateTile', async (req, res) => {
             'SELECT id, avgdB, avgLoud FROM noise_reports WHERE ST_DWithin(ST_MakeValid(geometry), ST_SetSRID(ST_MakePoint($1, $2), 4326), 0.000001)',
             [tileCoord[1], tileCoord[0]]
         );
-
 
 
         if (matchingTileQuery.rows.length > 0) {
@@ -192,13 +184,13 @@ app.post('/api/updateTile', async (req, res) => {
             `, [
                 matchingTile.id,         // $1
                 data.decibel.avg,        // $2
-                data.decibel.max,        // $3 (assuming dbmax is the same as avgdB, adjust accordingly)
+                data.decibel.max,        // $3 
                 data.decibel.max,        // $4
                 data.time,               // $5
                 data.date,               // $6
                 data.loudness,           // $7
                 data.feeling,            // $8
-                ["0"],    // $9 (assuming data.tags is an array)
+                ["0"],    // $9 FIX LATER
             ]);
 
             // Recalculate averages in the noise_reports table
