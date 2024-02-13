@@ -12,7 +12,7 @@ let map = L.map('map');
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    minZoom: 16,
+    minZoom: 12,
     maxBoundsViscosity: 1.0,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
@@ -20,7 +20,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 //bounds of map
 let bounds = [[18.454596, -66.066049], [18.447085, -66.050838]]
 map.fitBounds(bounds);
-map.setMaxBounds(bounds);
+//map.setMaxBounds(bounds);
 
 // polygon for monitoring area
 let goycoCoords = [
@@ -50,7 +50,7 @@ let goycoCoords = [
     [18.452072, -66.06386],
     [18.453374, -66.063539]
 ]
-const goyco = L.polygon(goycoCoords, { color: 'blue', fill: false }).addTo(map);
+const goyco = L.polygon(goycoCoords, { color: '#424242', fill: false }).addTo(map);
 
 
 function getColorDB(dB) {
@@ -72,6 +72,32 @@ function getColorDB(dB) {
     else { color = "#f70202"; };
     return color;
 }
+
+//button for recentering map
+L.Control.Recenter = L.Control.extend({
+    onAdd: function(map) {
+        let btn = L.DomUtil.create('button');
+        btn.innerHTML = "Back to Goyco";
+        btn.style.padding = "5px";
+        btn.style.fontFamily = "inherit";
+
+        L.DomEvent.on(btn, "click", function (e) {
+            map.fitBounds(bounds);
+        });
+
+        return btn;
+    },
+
+    onRemove: function(map) {
+        L.DomEvent.off();
+    }
+});
+
+L.control.recenter = function(opts) {
+    return new L.Control.Recenter(opts);
+}
+
+L.control.recenter({ position: 'topright' }).addTo(map);
 
 /* ==========================================================================
 GeoJSON Stuff
@@ -155,6 +181,9 @@ Input for adding data to the map
 //local vars for responses
 let reportTile;
 
+let testTile = L.polygon([[0,0]], {color: '#424242'}).addTo(map);
+let testMarker = L.marker([0,0]).addTo(map);
+
 let reportData =
 {
     "decibel": {
@@ -193,57 +222,6 @@ reportbtn.onclick = function () {
     report.style.display = "block";
 }
 
-//Decibel input
-const popup = document.querySelector("#dBpopup");
-const dbBtn = document.getElementById("enterDB");
-dbBtn.onclick = (event) => {
-    event.preventDefault();
-    popup.style.display = "block";
-};
-
-const dbForm = document.getElementById("dbForm");
-dbForm.addEventListener("submit", dbSubmit);
-function dbSubmit(event) {
-    event.preventDefault();
-    reportData.decibel.avg = parseInt(document.querySelector("#avg").value);
-    reportData.decibel.max = parseInt(document.querySelector("#max").value);
-    reportData.decibel.device = document.querySelector("#device").value;
-
-    dbForm.reset();
-
-    popup.style.display = "none";
-
-    const db = document.getElementById("db");
-    db.innerHTML = "";
-    const dbHeader = document.createElement("h4");
-    dbHeader.innerHTML = "Decibel Data";
-    db.appendChild(dbHeader);
-
-    const dbAvg = document.createElement("p");
-    dbAvg.innerHTML = "Average dB: " + reportData.decibel.avg;
-    db.appendChild(dbAvg);
-    const dbMax = document.createElement("p");
-    dbMax.innerHTML = "Max dB: " + reportData.decibel.max;
-    db.appendChild(dbMax);
-    const dbDevice = document.createElement("p");
-    if (reportData.decibel.device != "") {
-        dbDevice.innerHTML = "Device used for measurement: " + reportData.decibel.device;
-    }
-    else {
-        dbDevice.innerHTML = "Device used for measurement: not given";
-    }
-    db.appendChild(dbDevice);
-    db.style.lineHeight = "5px";
-
-};
-
-const dbCancel = document.getElementById("dbCancel");
-dbCancel.onclick = (event) => {
-    event.preventDefault();
-    dbForm.reset();
-    popup.style.display = "none";
-};
-
 
 //Location
 const curLoc = document.getElementById("curLoc");
@@ -265,35 +243,54 @@ selectLoc.onclick = (event) => {
     locationMode = true;
     //add message here telling you to click map (replace buttons)
 }
-const coordLoc = document.getElementById("coordLoc");
-coordLoc.onclick = (event) => {
+const tileZoom = document.getElementById("tileZoom");
+tileZoom.onclick = (event) => {
     event.preventDefault();
-    //replace buttons with input and submit (and cancel)
-    //handleLoc() in submit btn function
+    //zoom to test tile if it exists
+    if (!(testTile.getCenter().equals(L.latLng(0, 0)))) {
+        map.setView(testTile.getCenter(), 19);
+    }
+    
 }
+
 //calls the relevant functions after coords are selected through any method
 function handleLoc(lat, long) {
-    let valid = checkBounds(lat, long);
+    //if you want reports to be restricted to the monitoring area, uncomment checkBounds
+    //let valid = checkBounds(lat, long);
+    let valid = true;
+
+    if (lat == null) {
+        lat = parseFloat(document.getElementById("lat").value) - 0.000005;
+        long = parseFloat(document.getElementById("long").value) + 0.000005;
+
+        if ((isNaN(lat)) || (isNaN(long))) {
+            valid = false;
+        }
+    }
+
     if (valid) {
         let tile = calcLocation(lat, long);
         displayLocCoords(tile[0], tile[1]);
 
         //show tile on map for confirmation
-        /* L.marker([lat, long]).addTo(map);
 
-        var latlngs2 = [
+        let testlatlngs = [
             [tile[0], tile[1]],
             [tile[0], tile[1]+gridSize],
             [tile[0]-gridSize, tile[1]+gridSize],
             [tile[0]-gridSize, tile[1]]
         ];
-        var poly = L.polygon(latlngs2, {color: 'red'}).addTo(map); */
+
+        testMarker.setLatLng([lat, long]); 
+        testTile.setLatLngs(testlatlngs);
+
+        map.panTo(testTile.getCenter());
 
         //confirm buttons?
 
     }
     else {
-        invalidLoc();
+        //invalidLoc();
     }
 }
 
@@ -344,18 +341,10 @@ function calcLocation(lat, long) {
     return (reportTile);
 }
 function displayLocCoords(lat, long) {
-
-    const location = document.getElementById("location");
-    location.innerHTML = "";
-    const locHeader = document.createElement("h4");
-    locHeader.innerHTML = "Location";
-    location.appendChild(locHeader);
-
-    const tileCoords = document.createElement("p");
-    tileCoords.innerHTML = "Tile: " + lat + ", " + long;
-    location.appendChild(tileCoords);
-
-    location.style.lineHeight = "5px";
+    const locLat = document.getElementById("lat");
+    locLat.value = lat;
+    const locLong = document.getElementById("long");
+    locLong.value = long;
 }
 
 //Subjective loudness slider
@@ -457,9 +446,27 @@ function filterTags() {
 
 //Submit form
 const mapForm = document.getElementById("mapForm");
-mapForm.addEventListener("submit", mapSubmit);
+mapForm.addEventListener("submit", confirmSubmit);
+function confirmSubmit(event) {
+    event.preventDefault();
+    document.getElementById("submitPopup").style.display = "block";
+}
+const confirmForm = document.getElementById("confirmForm");
+confirmForm.addEventListener("submit", mapSubmit);
+
+document.getElementById("popCancel").onclick = function () {
+    document.getElementById("submitPopup").style.display = "none";
+    confirmForm.reset();
+}
+
 async function mapSubmit(event) {
     event.preventDefault();
+    document.getElementById("submitPopup").style.display = "none";
+    confirmForm.reset();
+
+    reportData.decibel.avg = parseInt(document.querySelector("#avg").value);
+    reportData.decibel.max = parseInt(document.querySelector("#max").value);
+    reportData.decibel.device = document.querySelector("#device").value;
 
     //check if decibel vals entered, if not set to null
     if (reportData.decibel.avg == null) {
@@ -475,7 +482,7 @@ async function mapSubmit(event) {
     addToTile();
 
     mapForm.reset();
-    dbForm.reset();
+
 
     //replace this to have "data submitted!"
     info.style.display = "block";

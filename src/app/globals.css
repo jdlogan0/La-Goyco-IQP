@@ -13,11 +13,13 @@ html {
 
 *, *:before, *:after {
     box-sizing: inherit;
+    font-family: inherit;
 }
 
 body {
     margin: 0px;
 }
+
 
 .wrapper {
     display: flex;
@@ -125,16 +127,34 @@ footer {
 
 
 .main { 
-    height: 300px; 
-    padding: 0;
+    height: 500px; 
+    padding-top: 80px;
+    margin: 0;
+    margin-bottom: 50px;
+    text-align: center;
+
+    background-image: url("map.png");
+    background-size: 100%;
+    
 
     display: flex;
     align-items: center;
     justify-content: center;
+
+    border-bottom: 10px solid #424242;
 }
 
 .main h1 {
     font-size: 80px;
+    margin: 0px;
+}
+.titleBox {
+    background-color: #eeeeeed6;
+    padding: 20px;
+}
+.titleBox p {
+    font-size: 20px;
+    margin: 0px;
 }
 
 .maintxt {
@@ -433,7 +453,7 @@ form button {
     background-color: #ffffff;
     min-width: 200px;
     z-index: 1;
-  }
+}
   
 .dropdown button {
     color: #424242;

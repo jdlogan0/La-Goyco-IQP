@@ -65,18 +65,37 @@
           <div class = "txtMain" id = "reportForm">
             <form id = mapForm>
               <h3>Decibel Level</h3>
-              <p>sentence description here - decibel data encouraged, link to device page</p>
-              <div id = "db">
-                <button id = "enterDB">Input Decibel Levels</button>
-              </div>
+              <p>sentence description here - decibel data encouraged, <a href = "monitors.html">link to device page</a></p>
+              <label for="avg">Average dB: </label>
+              <input id = "avg" type = "number" min = 25 max = 140 placeholder=60 required></input><br><br>
+              <label for="max">Max dB: </label>
+              <input id = "max" type = "number" min = 25 max = 140 placeholder=70 required></input><br><br>
+              <label for="device">Device used for measurement: </label>
+              <select id="device" name="device" required>
+                <option value="" selected>Select device</option>
+                <option value="Sound Level Meter (not mobile app)">Sound Level Meter (not mobile app)</option>
+                <option value="Type 1 Sound Level Meter">Type 1 Sound Level Meter</option>
+                <option value="Type 2 Sound Level Meter">Type 2 Sound Level Meter</option>
+                <option value="Type 1 Sound Level Meter (certified)">Type 1 Sound Level Meter (certified)</option>
+                <option value="Type 2 Sound Level Meter (certified)">Type 2 Sound Level Meter (certified)</option>
+                <option value="iPhone App">iPhone App</option>
+                <option value="Android App">Android App</option>
+                <option value="Other">Other</option>
+              </select>
+              <br>
               <br>
               <h3>Location</h3>
               <p>sentence description here - privacy, exact location not uploaded, 3 methods</p>
               <div id = "location">
+                <label for="lat">Latitude: </label>
+                <input id = "lat" placeholder=18.45172 required onfocusout = "handleLoc()"></input><br><br>
+                <label for="long">Longitude: </label>
+                <input id = "long" placeholder=-66.06245 required onfocusout = "handleLoc()"></input><br><br>
+
                 <div class = "btnGroup" id = "locBtns">
                   <button id = "curLoc">Current Location</button>
                   <button id = "selectLoc">Select on Map</button>
-                  <button id = "coordLoc">Coordinates</button>
+                  <button id = "tileZoom">Zoom to Tile</button>
                 </div>
               </div>
               <br>
@@ -123,20 +142,19 @@
         </div>
     </div>
 
-    <div class = "popupContainer" id = "dBpopup">
+    <div class = "popupContainer" id = "submitPopup">
       <div class = "popup">
-        <form id = "dbForm">
-          <h2 style = "text-align: center;">Decibel Data</h2>
-          <p>Quick desc here, stuff about device recs</p>
-          <label for="avg">Average dB: </label>
-          <input id = "avg" type = "number" min = 25 max = 140 placeholder=60 required></input><br><br>
-          <label for="max">Max dB: </label>
-          <input id = "max" type = "number" min = 25 max = 140 placeholder=70 required></input><br><br>
-          <label for="device">Device used for measurement: </label>
-          <input id = "device" placeholder="NIOSH SLM (iPhone App)"></input><br><br>
-                
-          <button type = "submit" id = "dbSubmit">Submit</button>
-          <button id = "dbCancel">Cancel</button>
+        <form id = "confirmForm">
+          <h3>Submit Report</h3>
+          <p>- Paragraph about what data is being submitted and how all is anonymous but public
+                - More detail about location
+                - What data may be used for</p>
+          <input type="checkbox" id="understand" name="understand" value="understand" required>
+          <label for="understand"> I understand the above and consent to uploading my info etc etc</label><br>
+          <input type="checkbox" id="above13" name="above13" value="above13" required>
+          <label for="above13"> I am 13 years or older</label><br><br>
+          <button type = "submit">Submit Report</button>
+          <button id = "popCancel">Cancel</button>
         </form>
       </div>
     </div>
