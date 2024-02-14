@@ -15,7 +15,7 @@ const client = new Client({
     port: 5432,
 });
 console.log("Connecting to database...");
-//client.connect();
+client.connect();
 
 app.use(express.json());
 app.use(express.static('public'));

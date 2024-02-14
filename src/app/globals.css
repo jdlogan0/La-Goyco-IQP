@@ -194,6 +194,7 @@ footer {
     box-shadow: 10px 10px #42424272;
     margin: 30px;
     padding: 30px;
+    height: max-content;
 }
 
 .page a {
@@ -223,7 +224,7 @@ footer {
 }
 
 .mapTxt {
-    padding: 0px 30px 0px 30px;
+    padding: 0px 0px 0px 30px;
 
     display: grid;
     grid-template-columns: auto auto;
@@ -483,7 +484,33 @@ form button {
     color: #424242;
 }
 
-/* popupp stuff */
+.feeling-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0.8rem;
+  width: 100%;
+}
+
+.feeling-container label{
+    background-color: #82dcd8;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 10px;
+    border: 2px solid #82dcd8;
+}
+input[type = "radio"]{
+    display: none;
+} 
+input[type = "radio"]:checked + label {
+    background-color: #424242;
+    border: 2px solid #424242;
+} 
+input[type = "radio"]:hover + label {
+    border: 2px solid #424242;
+} 
+
+/* popup stuff */
 
 .popupContainer {
     position: fixed;
@@ -501,7 +528,8 @@ form button {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 50%;
+    width: max-content;
+    max-width: 50%;
     background-color: #eeeeee;
     border-radius: 15px;
     color: #424242;
@@ -527,6 +555,9 @@ form button {
         grid-template-columns: auto;
         grid-template-rows: auto auto;
     }
+    .mapTxt {
+        padding: 20px;
+    }
     .pages {
         grid-template-columns: auto;
         grid-template-rows: auto auto auto;
@@ -551,6 +582,9 @@ form button {
     }
     #handbookNav a {
         margin: 5px;
+    }
+    .popup {
+        max-width: 80%;
     }
 }
 

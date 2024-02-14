@@ -198,6 +198,8 @@ let reportData =
     "tags": []
 }
 
+const emojis = ['😀', '🙂', '😐', '🙁', '😢'];
+
 const backData = document.getElementById("backData");
 const backReport = document.getElementById("backReport");
 const info = document.getElementById("mapInfo");
@@ -245,7 +247,6 @@ const curLoc = document.getElementById("curLoc");
 curLoc.onclick = (event) => {
     event.preventDefault();
     if ("geolocation" in navigator) {
-        alert("why");
         navigator.geolocation.getCurrentPosition((position) => {
             handleLoc(position.coords.latitude, position.coords.longitude);
         });
@@ -356,29 +357,9 @@ function displayLocCoords(lat, long) {
     locLong.value = long;
 }
 
-//Subjective loudness slider
-const loudDesc = ["Silence", "Light noise (Ex: library)", "Everyday noise (Ex: conversation)", "Moderate noise (Ex: busy hotel lobby)", "Loud noise (Ex: concert)", "Unbearable levels of noise (Ex: jackhammer)"];
-const loudRange = document.getElementById("perception");
-const loudTxt = document.getElementById("loudTxt");
-let loudCurrent = document.getElementById("perceptionNum");
-loudCurrent.innerHTML = loudRange.value;
-loudRange.oninput = function (e) {
-    loudTxt.innerHTML = loudDesc[e.target.value];
-    loudCurrent.innerHTML = this.value;
-};
-
-//Feeling slider
-const emojis = ['😀', '🙂', '😐', '🙁', '😢'];
-const feelingRange = document.getElementById("feeling");
-const emoji = document.getElementById("emoji");
-feelingRange.oninput = function (e) {
-    emoji.innerHTML = emojis[e.target.value];
-};
-
-
 //tag stuff
 
-let tagList = ["Car", "Motorcycle", "Traffic", "Construction", "Wildlife", "Music", "Restaurant", "Bar", "Rain", "Aircraft", "Indoor", "Outdoor"];
+let tagList = ["Car", "Motorcycle", "Traffic", "Construction", "Wildlife", "Music", "Restaurant", "Bar", "Rain", "Aircraft", "Indoor", "Outdoor", "Windy"];
 let userTags = [];
 createTags();
 
@@ -490,13 +471,16 @@ async function mapSubmit(event) {
 
     reportData.date = document.querySelector("#date").value;
     reportData.time = document.querySelector("#time").value;
-    reportData.loudness = parseInt(document.querySelector("#perception").value);
-    reportData.feeling = parseInt(document.querySelector("#feeling").value);
+    reportData.loudness = parseInt(document.querySelector("#loudness").value);
+    reportData.feeling = parseInt(document.querySelector('input[name="feeling"]:checked').value);
     reportData.tags = userTags;
 
     addToTile();
 
     mapForm.reset();
+
+    testMarker.setLatLng([0, 0]); 
+    testTile.setLatLngs([[0,0]]);
 
     locationMode = false;
 

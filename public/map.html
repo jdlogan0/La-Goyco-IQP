@@ -65,13 +65,13 @@
           <div class = "txtMain" id = "reportForm">
             <form id = mapForm>
               <h3>Decibel Level</h3>
-              <p>sentence description here - decibel data encouraged, <a href = "monitors.html">link to device page</a></p>
+              <p>Sentence description here - decibel data encouraged, <a href = "monitors.html">link to device page</a></p>
               <label for="avg">Average dB: </label>
-              <input id = "avg" type = "number" min = 25 max = 140 placeholder=60 required></input><br><br>
+              <input id = "avg" type = "number" min = 25 max = 140 placeholder=60></input><br><br>
               <label for="max">Max dB: </label>
-              <input id = "max" type = "number" min = 25 max = 140 placeholder=70 required></input><br><br>
+              <input id = "max" type = "number" min = 25 max = 140 placeholder=70></input><br><br>
               <label for="device">Device used for measurement: </label>
-              <select id="device" name="device" required>
+              <select id="device" name="device">
                 <option value="" selected>Select device</option>
                 <option value="Sound Level Meter (not mobile app)">Sound Level Meter (not mobile app)</option>
                 <option value="Type 1 Sound Level Meter">Type 1 Sound Level Meter</option>
@@ -85,7 +85,9 @@
               <br>
               <br>
               <h3>Location</h3>
-              <p>sentence description here - privacy, exact location not uploaded, 3 methods</p>
+              <p>Enter your location by clicking on the map, entering coordinates, or using your current location.
+                The exact location of a report is not saved, just the
+                tile it is a part of. Use "Zoom to Tile" to see your tile.</p>
               
               <label for="lat">Latitude: </label>
               <input id = "lat" placeholder=18.45172 required onfocusout = "handleLoc()"></input><br><br>
@@ -100,31 +102,50 @@
               <br>
               <h3>Date & Time</h3>
               <p>sentence description here - why we need to know date/time</p>
+              <label for = "date">Date: </label>
               <input type="date" id="date" name="date" required/>
               <br>
+              <br>
+              <label for = "time">Time: </label>
               <input type="time" id="time" name="time" required/>
               <br>
               <br>
 
-              <h3>Subjective Loudness</h3>
-              <p>On a scale from 1 to 10, how loud is it?</p>
-              <div class="slidecontainer">
-                <div id = "perceptionNum" class = "num">5</div>
-                <div id="loudTxt">Neutral</div>
-                <input type="range" min="0" max="10" value="5" class="slider" id="perception">
-              </div>
+              <h3>Subjective Data</h3>
+              <label for="loudness">On a scale from 0 to 5, how loud is it?</label>
+              <select id="loudness" name="loudness" required>
+                <option value="" selected>...</option>
+                <option value = "0">0 - Silence</option>
+                <option value = "1">1 - Light noise (Ex: library)</option>
+                <option value = "2">2 - Everyday noise (Ex: conversation)</option>
+                <option value = "3">3 - Moderate noise (Ex: busy hotel lobby)</option>
+                <option value = "4">4 - Loud noise (Ex: concert)</option>
+                <option value = "5">5 - Unbearable levels of noise (Ex: jackhammer)</option>
+              </select>
               <br>
 
-              <h3>Associated Feeling</h3>
-              <p>What feeling do you associate with the noise around you? How pleasant is the sound?</p>
-              <div class="slidecontainer">
-                <div id="emoji" class = "num">😀</div>
-                <input type="range" min="0" max="4" value="0" class="slider" id="feeling">
+              <p>What feeling do you associate with the noise around you?</p>
+              <div class = "feeling-container">
+                <input type="radio" id="happiest" name="feeling" value="0">
+                <label for = "happiest">😀</label>
+                <br>
+                <input type="radio" id="happy" name="feeling" value="1">
+                <label for = "happy">🙂</label>
+                <br>
+                <input type="radio" id="neutral" name="feeling" value="2">
+                <label for = "neutral">😐</label>
+                <br>
+                <input type="radio" id="unpleasant" name="feeling" value="3">
+                <label for = "unpleasant">🙁</label>
+                <br>
+                <input type="radio" id="sad" name="feeling" value="4">
+                <label for = "sad">😢</label>
+                <br>
               </div>
               <br>
 
               <h3>Tags</h3>
-              <p>Use tags to describe the noise type and measurement conditions.</p>
+              <p>Use tags to describe the noise type and measurement conditions (traffic, outdoor, windy, etc.).</p>
               <div class="tagContainer">
                 <input type="text" placeholder="Search tags..." id="tagSearch" onkeyup="filterTags()" onfocusout = "hideTags(window.event)">
                 <div id="tagDropdown" class="dropdown">
@@ -146,7 +167,7 @@
         <form id = "confirmForm">
           <h3>Submit Report</h3>
           <p>- Paragraph about what data is being submitted and how all is anonymous but public
-                - More detail about location
+                - More detail about location privacy
                 - What data may be used for</p>
           <input type="checkbox" id="understand" name="understand" value="understand" required>
           <label for="understand"> I understand the above and consent to uploading my info etc etc</label><br>
