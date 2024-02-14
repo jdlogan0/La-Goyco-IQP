@@ -34,6 +34,7 @@ body {
 .flex {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 
 
@@ -51,7 +52,7 @@ footer {
     left: 0;
     width: 100%;
     position: fixed;
-    padding: 5px 5%;
+    padding: 2px 5%;
 
     display: flex;
     justify-content: space-between;
@@ -59,6 +60,10 @@ footer {
 
     color: #eeeeee;
     background-color: #424242;
+
+    z-index: 1;
+
+    font-size: 17px;
 
 }
 
@@ -92,9 +97,7 @@ footer {
 .languageSelect {
     position: relative;
     display: inline-block;
-    width: 130px;
-    border: 2px solid #eeeeee;
-    border-radius: 5px;
+    width: 115px;
 }
 .langBtn {
     background-color: #424242;
@@ -104,6 +107,8 @@ footer {
     padding: 5px;
     font-size: 16px;
     border: none;
+
+    border-radius: 10px 10px 0px 0px;
 }
 .langOptions {
     display: none;
@@ -112,6 +117,8 @@ footer {
     min-width: 100%;
     text-align: center;
     z-index: 1;
+    border-radius: 0px 0px 10px 10px;
+    overflow: hidden;
 }
 .languageSelect:hover .langOptions {
     display: block;
@@ -119,6 +126,10 @@ footer {
 .langBtn:hover {
     background-color: #eeeeee;
     color: #424242;
+}
+.lang {
+    padding: 5px;
+    cursor: pointer;
 }
 .lang:hover {
     background-color: #eeeeee;
@@ -132,6 +143,7 @@ footer {
     margin: 0;
     margin-bottom: 50px;
     text-align: center;
+    
 
     background-image: url("map.png");
     background-size: 100%;
@@ -172,7 +184,7 @@ footer {
 
 .pages {
     display: grid;
-    grid-auto-rows: 1fr;
+    grid-template-rows: auto;
     grid-template-columns: 1fr 1fr 1fr;
     padding: 0px 30px;
 }
@@ -182,7 +194,6 @@ footer {
     box-shadow: 10px 10px #42424272;
     margin: 30px;
     padding: 30px;
-
 }
 
 .page a {
@@ -196,25 +207,26 @@ footer {
 
 /* ABOUT */
 
-#about{
-    margin: 50px;
-}
 
 /* MAP */
 
 #map { 
-    width: 900px;
-    height: 500px; 
+    height: 500px;
     background-color: #00000022;
+    z-index: 0;
+}
+.mapGrid {
+    display: grid;
+    grid-template-columns: 65% auto;
+    grid-template-rows: auto;
+    
 }
 
 .mapTxt {
-    flex-grow: 1;
-    padding: 0px 0px 0px 40px;
+    padding: 0px 30px 0px 30px;
 
-    max-width: 35%;
-    width: 35%;
-    max-height: 500px;
+    display: grid;
+    grid-template-columns: auto auto;
 }
 .txtMain {
     height: 100%;
@@ -268,8 +280,7 @@ form button {
 
 .reportBtn:active {
     box-shadow: none;
-    top: 2px;
-    left: 2px;
+    transform: translate(2px, 2px);
 }
 
 #reportForm h3 {
@@ -381,7 +392,7 @@ form button {
 .handbook {
     padding: 20px;
     align-items: flex-start;
-    flex-grow: 1;
+    flex-wrap: nowrap;
 }
 
 #handbookTxt {
@@ -506,9 +517,58 @@ form button {
     border: none;
     width: fit-content;
 }
-#device {
-    min-width: 300px;
-}
 .popup input:focus {
     outline: 2px solid #82dcd8;
+}
+
+/*Small screen*/
+@media only screen and (max-width:1000px){
+    .mapGrid {
+        grid-template-columns: auto;
+        grid-template-rows: auto auto;
+    }
+    .pages {
+        grid-template-columns: auto;
+        grid-template-rows: auto auto auto;
+    }
+    .main h1 {
+        font-size: 60px;
+        margin: 0px;
+    }
+
+    .handbook {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding: 0px;
+    }
+    #handbookNav {
+        display: flex;
+        align-items: center;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+    }
+    #handbookNav a {
+        margin: 5px;
+    }
+}
+
+
+/*mobile*/
+@media only screen and (max-width:500px){
+    .page {
+        margin: 0px;
+        box-shadow: 0px 10px #42424272;
+    }
+
+    .navbar, .langBtn {
+        font-size: 15px;
+    }
+    .navlinks li {
+        padding: 0px 20px 0px 0px;
+    }
+    .languageSelect {
+        width: 100px;
+    }
 }

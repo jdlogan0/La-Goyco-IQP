@@ -82,6 +82,7 @@ L.Control.Recenter = L.Control.extend({
         btn.style.fontFamily = "inherit";
 
         L.DomEvent.on(btn, "click", function (e) {
+            L.DomEvent.stopPropagation(e);
             map.fitBounds(bounds);
         });
 
@@ -168,7 +169,6 @@ function onEachFeature(feature, layer) {
 function onMapClick(e) {
     if (locationMode == true) {
         handleLoc(e.latlng.lat, e.latlng.lng);
-        locationMode = false;
     }
 }
 map.on('click', onMapClick);
@@ -207,19 +207,36 @@ const dataBlocks = document.getElementById("dataBlocks");
 const tName = document.getElementById("tileName");
 const reportbtn = document.getElementById("reportBtn");
 
+const leavePopup = document.getElementById("leavePopup");
+
 //hide/show main and report pages
 backData.onclick = function () {
     info.style.display = "block";
     data.style.display = "none";
 }
 backReport.onclick = function () {
+    leavePopup.style.display = "block";
+}
+
+const leaveForm = document.getElementById("leaveForm");
+leaveForm.onclick = function () {
     info.style.display = "block";
     report.style.display = "none";
+    leavePopup.style.display = "none";
+
+    mapForm.reset();
+    locationMode = false;
 }
+document.getElementById("stayForm").onclick = function () {
+    leavePopup.style.display = "none";
+}
+
 reportbtn.onclick = function () {
     info.style.display = "none";
     data.style.display = "none";
     report.style.display = "block";
+
+    locationMode = true;
 }
 
 
@@ -228,6 +245,7 @@ const curLoc = document.getElementById("curLoc");
 curLoc.onclick = (event) => {
     event.preventDefault();
     if ("geolocation" in navigator) {
+        alert("why");
         navigator.geolocation.getCurrentPosition((position) => {
             handleLoc(position.coords.latitude, position.coords.longitude);
         });
@@ -236,12 +254,6 @@ curLoc.onclick = (event) => {
         alert("Geolocation is not available");
     }
 
-}
-const selectLoc = document.getElementById("selectLoc");
-selectLoc.onclick = (event) => {
-    event.preventDefault();
-    locationMode = true;
-    //add message here telling you to click map (replace buttons)
 }
 const tileZoom = document.getElementById("tileZoom");
 tileZoom.onclick = (event) => {
@@ -285,9 +297,6 @@ function handleLoc(lat, long) {
         testTile.setLatLngs(testlatlngs);
 
         map.panTo(testTile.getCenter());
-
-        //confirm buttons?
-
     }
     else {
         //invalidLoc();
@@ -373,6 +382,10 @@ let tagList = ["Car", "Motorcycle", "Traffic", "Construction", "Wildlife", "Musi
 let userTags = [];
 createTags();
 
+document.getElementById("tagSearch").oninput = function (e) {
+    e.preventDefault();
+};
+
 function createTags() {
     for (let i = 0; i < tagList.length; i++) {
         createTag(tagList[i]);
@@ -382,6 +395,7 @@ function createTag(tag) {
     const tagDrop = document.getElementById("tagDropdown");
     const tagBtn = document.createElement("button");
     tagBtn.innerHTML = tag;
+    tagBtn.type = "button";
     tagBtn.onclick = (event) => {
         event.preventDefault();
         addTag(tag);
@@ -407,6 +421,7 @@ function addTag(tag) {
         createTag(tag);
         tagX.parentNode.parentNode.removeChild(newTag);
     };
+    tagX.type = "button";
     newTag.appendChild(tagX);
 
     selectedTags.appendChild(newTag);
@@ -483,8 +498,8 @@ async function mapSubmit(event) {
 
     mapForm.reset();
 
+    locationMode = false;
 
-    //replace this to have "data submitted!"
     info.style.display = "block";
     report.style.display = "none";
 };

@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
      crossorigin=""/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
 
   <body>
@@ -16,7 +17,7 @@
     <header>
         <div class="navbar">
           <ul class = "navlinks">
-            <li><a href="index.html">Noise Pollution in La Goyco</a></li>
+            <li class = "homebtn"><a href="index.html"><i class="fa fa-home" aria-hidden="true"></i></a></li>
             <li><a href="about.html">About</a></li>
             <li class = "current"><a href="map.html">Map</a></li>
             <li><a href="handbook.html">Handbook</a></li>
@@ -24,7 +25,6 @@
           <div class="languageSelect">
             <button class="langBtn">🌐 English ▾</button>
             <div class = "langOptions">
-              <div class = "lang">🌐 English</div>
               <div class = "lang">🌐 Español</div>
             </div>
           </button>
@@ -33,7 +33,7 @@
         <div class = "navspace"></div>
     </header>
 
-    <div class = "page flex">
+    <div class = "page mapGrid">
         <div id="map"></div>
         <div id = "mapInfo" class = "mapTxt">
           <div class = "txtHeader">
@@ -86,18 +86,17 @@
               <br>
               <h3>Location</h3>
               <p>sentence description here - privacy, exact location not uploaded, 3 methods</p>
-              <div id = "location">
-                <label for="lat">Latitude: </label>
-                <input id = "lat" placeholder=18.45172 required onfocusout = "handleLoc()"></input><br><br>
-                <label for="long">Longitude: </label>
-                <input id = "long" placeholder=-66.06245 required onfocusout = "handleLoc()"></input><br><br>
+              
+              <label for="lat">Latitude: </label>
+              <input id = "lat" placeholder=18.45172 required onfocusout = "handleLoc()"></input><br><br>
+              <label for="long">Longitude: </label>
+              <input id = "long" placeholder=-66.06245 required onfocusout = "handleLoc()"></input><br><br>
 
-                <div class = "btnGroup" id = "locBtns">
-                  <button id = "curLoc">Current Location</button>
-                  <button id = "selectLoc">Select on Map</button>
-                  <button id = "tileZoom">Zoom to Tile</button>
-                </div>
+              <div class = "btnGroup" id = "locBtns">
+                <button type="button" id = "curLoc">Use Current Location</button>
+                <button type="button" id = "tileZoom">Zoom to Tile</button>
               </div>
+              
               <br>
               <h3>Date & Time</h3>
               <p>sentence description here - why we need to know date/time</p>
@@ -154,8 +153,17 @@
           <input type="checkbox" id="above13" name="above13" value="above13" required>
           <label for="above13"> I am 13 years or older</label><br><br>
           <button type = "submit">Submit Report</button>
-          <button id = "popCancel">Cancel</button>
+          <button type="button" id = "popCancel">Cancel</button>
         </form>
+      </div>
+    </div>
+
+    <div class = "popupContainer" id = "leavePopup">
+      <div class = "popup">
+        <h3>Are you sure you want to go back?</h3>
+        <p>Your response will be reset if you leave this form.</p>
+        <button id = "leaveForm" >Leave Form</button>
+        <button id = "stayForm">Cancel</button>
       </div>
     </div>
     
