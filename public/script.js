@@ -227,6 +227,9 @@ leaveForm.onclick = function () {
     leavePopup.style.display = "none";
 
     mapForm.reset();
+
+    testMarker.setLatLng([0, 0]); 
+    testTile.setLatLngs([[0,0]]);
     locationMode = false;
 }
 document.getElementById("stayForm").onclick = function () {
